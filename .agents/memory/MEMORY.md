@@ -1,0 +1,3 @@
+- [AgentHub AI Architecture](agenthub-arch.md) — Express+PG backend, React+Vite frontend, Clerk auth, Drizzle ORM, Orval codegen
+- [Clerk Wiring Rules](clerk-wiring.md) — cookie-based auth on web, proxy middleware before body parsers, no getToken() in browser
+- [Express 5 Patterns](express5-patterns.md) — wildcard routes use /{*splat}, async handlers return Promise<void>, early returns need res.json();return

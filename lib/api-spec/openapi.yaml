@@ -3,13 +3,22 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: AgentHub AI - Multi-tenant SaaS API for AI-powered messaging agents
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: workspaces
+    description: Workspace management
+  - name: businesses
+    description: Business management
+  - name: agents
+    description: AI Agent management
+  - name: dashboard
+    description: Dashboard and analytics
+
 paths:
   /healthz:
     get:
@@ -24,6 +33,369 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  # ─── Workspaces ───────────────────────────────────────────────────────────
+  /workspaces:
+    get:
+      operationId: listWorkspaces
+      tags: [workspaces]
+      summary: List all workspaces for the current user
+      responses:
+        "200":
+          description: List of workspaces
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Workspace"
+    post:
+      operationId: createWorkspace
+      tags: [workspaces]
+      summary: Create a new workspace
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WorkspaceInput"
+      responses:
+        "201":
+          description: Created workspace
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Workspace"
+
+  /workspaces/{workspaceId}:
+    get:
+      operationId: getWorkspace
+      tags: [workspaces]
+      summary: Get a workspace by ID
+      parameters:
+        - name: workspaceId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Workspace
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Workspace"
+        "404":
+          description: Not found
+    patch:
+      operationId: updateWorkspace
+      tags: [workspaces]
+      summary: Update a workspace
+      parameters:
+        - name: workspaceId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WorkspaceUpdate"
+      responses:
+        "200":
+          description: Updated workspace
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Workspace"
+        "404":
+          description: Not found
+    delete:
+      operationId: deleteWorkspace
+      tags: [workspaces]
+      summary: Delete a workspace
+      parameters:
+        - name: workspaceId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  # ─── Businesses ───────────────────────────────────────────────────────────
+  /workspaces/{workspaceId}/businesses:
+    get:
+      operationId: listBusinesses
+      tags: [businesses]
+      summary: List all businesses in a workspace
+      parameters:
+        - name: workspaceId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of businesses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Business"
+    post:
+      operationId: createBusiness
+      tags: [businesses]
+      summary: Create a new business in a workspace
+      parameters:
+        - name: workspaceId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BusinessInput"
+      responses:
+        "201":
+          description: Created business
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Business"
+
+  /businesses/{businessId}:
+    get:
+      operationId: getBusiness
+      tags: [businesses]
+      summary: Get a business by ID
+      parameters:
+        - name: businessId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Business
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Business"
+        "404":
+          description: Not found
+    patch:
+      operationId: updateBusiness
+      tags: [businesses]
+      summary: Update a business
+      parameters:
+        - name: businessId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BusinessUpdate"
+      responses:
+        "200":
+          description: Updated business
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Business"
+        "404":
+          description: Not found
+    delete:
+      operationId: deleteBusiness
+      tags: [businesses]
+      summary: Delete a business
+      parameters:
+        - name: businessId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  # ─── AI Agents ────────────────────────────────────────────────────────────
+  /workspaces/{workspaceId}/agents:
+    get:
+      operationId: listAgents
+      tags: [agents]
+      summary: List all AI agents in a workspace
+      parameters:
+        - name: workspaceId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of agents
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Agent"
+    post:
+      operationId: createAgent
+      tags: [agents]
+      summary: Create a new AI agent in a workspace
+      parameters:
+        - name: workspaceId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AgentInput"
+      responses:
+        "201":
+          description: Created agent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Agent"
+
+  /agents/{agentId}:
+    get:
+      operationId: getAgent
+      tags: [agents]
+      summary: Get an AI agent by ID
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Agent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Agent"
+        "404":
+          description: Not found
+    patch:
+      operationId: updateAgent
+      tags: [agents]
+      summary: Update an AI agent
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AgentUpdate"
+      responses:
+        "200":
+          description: Updated agent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Agent"
+        "404":
+          description: Not found
+    delete:
+      operationId: deleteAgent
+      tags: [agents]
+      summary: Delete an AI agent
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /agents/{agentId}/toggle-status:
+    patch:
+      operationId: toggleAgentStatus
+      tags: [agents]
+      summary: Toggle an agent's active/inactive status
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Updated agent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Agent"
+        "404":
+          description: Not found
+
+  # ─── Dashboard ────────────────────────────────────────────────────────────
+  /workspaces/{workspaceId}/dashboard:
+    get:
+      operationId: getDashboardSummary
+      tags: [dashboard]
+      summary: Get dashboard summary stats for a workspace
+      parameters:
+        - name: workspaceId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Dashboard summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardSummary"
+
+  /workspaces/{workspaceId}/activity:
+    get:
+      operationId: getRecentActivity
+      tags: [dashboard]
+      summary: Get recent activity for a workspace
+      parameters:
+        - name: workspaceId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Recent activity items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ActivityItem"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +406,371 @@ components:
       required:
         - status
 
+    # ─── Workspace ──────────────────────────────────────────────────────────
+    Workspace:
+      type: object
+      required: [id, name, slug, ownerId, plan, createdAt, updatedAt]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        slug:
+          type: string
+        description:
+          type: ["string", "null"]
+        ownerId:
+          type: string
+        plan:
+          type: string
+          enum: [free, starter, pro, enterprise]
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    WorkspaceInput:
+      type: object
+      required: [name, slug]
+      properties:
+        name:
+          type: string
+          minLength: 1
+        slug:
+          type: string
+          minLength: 1
+        description:
+          type: string
+
+    WorkspaceUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+        description:
+          type: string
+
+    # ─── Business ───────────────────────────────────────────────────────────
+    Business:
+      type: object
+      required: [id, workspaceId, name, timezone, createdAt, updatedAt]
+      properties:
+        id:
+          type: integer
+        workspaceId:
+          type: integer
+        name:
+          type: string
+        logoUrl:
+          type: ["string", "null"]
+        description:
+          type: ["string", "null"]
+        timezone:
+          type: string
+        language:
+          type: ["string", "null"]
+        website:
+          type: ["string", "null"]
+        email:
+          type: ["string", "null"]
+        phone:
+          type: ["string", "null"]
+        brandVoice:
+          type: ["string", "null"]
+        brandPersonality:
+          type: ["string", "null"]
+        returnPolicy:
+          type: ["string", "null"]
+        shippingPolicy:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    BusinessInput:
+      type: object
+      required: [name, timezone]
+      properties:
+        name:
+          type: string
+          minLength: 1
+        description:
+          type: string
+        timezone:
+          type: string
+        language:
+          type: string
+        website:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        brandVoice:
+          type: string
+        brandPersonality:
+          type: string
+        returnPolicy:
+          type: string
+        shippingPolicy:
+          type: string
+
+    BusinessUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+        description:
+          type: string
+        timezone:
+          type: string
+        language:
+          type: string
+        website:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        brandVoice:
+          type: string
+        brandPersonality:
+          type: string
+        returnPolicy:
+          type: string
+        shippingPolicy:
+          type: string
+
+    # ─── Agent ──────────────────────────────────────────────────────────────
+    Agent:
+      type: object
+      required: [id, workspaceId, name, role, status, provider, model, temperature, maxTokens, emojiLevel, humorLevel, creativity, createdAt, updatedAt]
+      properties:
+        id:
+          type: integer
+        workspaceId:
+          type: integer
+        businessId:
+          type: ["integer", "null"]
+        name:
+          type: string
+        avatarUrl:
+          type: ["string", "null"]
+        role:
+          type: string
+        job:
+          type: ["string", "null"]
+        description:
+          type: ["string", "null"]
+        language:
+          type: string
+        tone:
+          type: string
+          enum: [professional, friendly, casual, formal, empathetic]
+        personality:
+          type: ["string", "null"]
+        instructions:
+          type: ["string", "null"]
+        goal:
+          type: ["string", "null"]
+        emojiLevel:
+          type: integer
+          minimum: 0
+          maximum: 10
+        humorLevel:
+          type: integer
+          minimum: 0
+          maximum: 10
+        creativity:
+          type: integer
+          minimum: 0
+          maximum: 10
+        temperature:
+          type: number
+          minimum: 0
+          maximum: 2
+        maxTokens:
+          type: integer
+        provider:
+          type: string
+          enum: [deepseek, gemini, openai, claude]
+        model:
+          type: string
+        status:
+          type: string
+          enum: [active, inactive, draft]
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    AgentInput:
+      type: object
+      required: [name, role, provider, model]
+      properties:
+        businessId:
+          type: integer
+        name:
+          type: string
+          minLength: 1
+        role:
+          type: string
+          minLength: 1
+        job:
+          type: string
+        description:
+          type: string
+        language:
+          type: string
+        tone:
+          type: string
+          enum: [professional, friendly, casual, formal, empathetic]
+        personality:
+          type: string
+        instructions:
+          type: string
+        goal:
+          type: string
+        emojiLevel:
+          type: integer
+          minimum: 0
+          maximum: 10
+        humorLevel:
+          type: integer
+          minimum: 0
+          maximum: 10
+        creativity:
+          type: integer
+          minimum: 0
+          maximum: 10
+        temperature:
+          type: number
+          minimum: 0
+          maximum: 2
+        maxTokens:
+          type: integer
+        provider:
+          type: string
+          enum: [deepseek, gemini, openai, claude]
+        model:
+          type: string
+
+    AgentUpdate:
+      type: object
+      properties:
+        businessId:
+          type: integer
+        name:
+          type: string
+          minLength: 1
+        role:
+          type: string
+        job:
+          type: string
+        description:
+          type: string
+        language:
+          type: string
+        tone:
+          type: string
+          enum: [professional, friendly, casual, formal, empathetic]
+        personality:
+          type: string
+        instructions:
+          type: string
+        goal:
+          type: string
+        emojiLevel:
+          type: integer
+          minimum: 0
+          maximum: 10
+        humorLevel:
+          type: integer
+          minimum: 0
+          maximum: 10
+        creativity:
+          type: integer
+          minimum: 0
+          maximum: 10
+        temperature:
+          type: number
+          minimum: 0
+          maximum: 2
+        maxTokens:
+          type: integer
+        provider:
+          type: string
+          enum: [deepseek, gemini, openai, claude]
+        model:
+          type: string
+        status:
+          type: string
+          enum: [active, inactive, draft]
+
+    # ─── Dashboard ───────────────────────────────────────────────────────────
+    DashboardSummary:
+      type: object
+      required: [totalAgents, activeAgents, totalBusinesses, agentsByStatus, agentsByProvider]
+      properties:
+        totalAgents:
+          type: integer
+        activeAgents:
+          type: integer
+        inactiveAgents:
+          type: integer
+        totalBusinesses:
+          type: integer
+        agentsByStatus:
+          type: array
+          items:
+            $ref: "#/components/schemas/StatusCount"
+        agentsByProvider:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProviderCount"
+
+    StatusCount:
+      type: object
+      required: [status, count]
+      properties:
+        status:
+          type: string
+        count:
+          type: integer
+
+    ProviderCount:
+      type: object
+      required: [provider, count]
+      properties:
+        provider:
+          type: string
+        count:
+          type: integer
+
+    ActivityItem:
+      type: object
+      required: [id, type, title, description, createdAt]
+      properties:
+        id:
+          type: integer
+        type:
+          type: string
+          enum: [agent_created, agent_updated, agent_activated, agent_deactivated, business_created, workspace_created]
+        title:
+          type: string
+        description:
+          type: string
+        entityId:
+          type: ["integer", "null"]
+        createdAt:
+          type: string
+          format: date-time

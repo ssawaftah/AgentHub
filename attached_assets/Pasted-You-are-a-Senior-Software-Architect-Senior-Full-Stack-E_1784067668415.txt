@@ -1,0 +1,765 @@
+You are a Senior Software Architect, Senior Full-Stack Engineer, Cloudflare Expert, AI Engineer and Product Designer.
+
+Your task is NOT to generate a simple demo.
+
+Your task is to build a production-ready SaaS platform that can eventually become a commercial product similar to Intercom AI, Zendesk AI, Gorgias AI and Relevance AI.
+
+The project name is:
+
+AgentHub AI
+
+==================================================
+IMPORTANT DEVELOPMENT RULES
+==================================================
+
+DO NOT build everything at once.
+
+Instead, work in small milestones.
+
+Before writing code:
+
+1. Analyze the entire project.
+2. Design the architecture.
+3. Split the project into logical phases.
+4. Complete one phase at a time.
+5. Never move to the next phase until the current phase is complete.
+
+After completing every phase:
+
+• Update PROJECT_PROGRESS.md
+• Update PROJECT_TODO.md
+• Update CHANGELOG.md
+• Mark completed tasks
+• Add the next tasks
+
+These markdown files are mandatory.
+
+They must always reflect the real state of the project.
+
+Never forget to update them.
+
+==================================================
+PROJECT GOAL
+==================================================
+
+Build a modern multi-tenant SaaS platform that allows businesses to create AI Agents capable of replying automatically to Instagram messages.
+
+The architecture must be flexible enough to support future integrations including:
+
+Instagram
+
+WhatsApp
+
+Messenger
+
+Telegram
+
+Email
+
+Website Live Chat
+
+Voice AI
+
+CRM
+
+API
+
+==================================================
+TECH STACK
+==================================================
+
+Frontend
+
+React
+
+TypeScript
+
+Vite
+
+TailwindCSS
+
+shadcn/ui
+
+React Query
+
+React Hook Form
+
+Zod
+
+Backend
+
+Cloudflare Workers
+
+Database
+
+Cloudflare D1
+
+Storage
+
+Cloudflare R2
+
+Caching
+
+Cloudflare KV
+
+Background Jobs
+
+Cloudflare Queues
+
+Scheduled Jobs
+
+Cloudflare Cron Triggers
+
+Realtime
+
+Cloudflare Durable Objects
+
+ORM
+
+Drizzle ORM
+
+Deployment
+
+Wrangler
+
+Everything must be deployable directly to Cloudflare.
+
+Do not use Express.
+
+Do not use PostgreSQL.
+
+Do not use traditional servers.
+
+Use Cloudflare native services whenever possible.
+
+==================================================
+ARCHITECTURE
+==================================================
+
+Follow Clean Architecture.
+
+Follow Domain Driven Design.
+
+Use modular architecture.
+
+Each module must be independent.
+
+The code must be scalable.
+
+The code must be maintainable.
+
+The code must be production ready.
+
+==================================================
+MULTI TENANT
+==================================================
+
+Every account owns:
+
+Workspaces
+
+Businesses
+
+Brains
+
+Knowledge Bases
+
+AI Agents
+
+Customers
+
+Instagram Accounts
+
+API Keys
+
+Conversations
+
+Analytics
+
+Settings
+
+Data must always be isolated.
+
+==================================================
+BUSINESS
+==================================================
+
+Each Business contains:
+
+Business Name
+
+Logo
+
+Description
+
+Timezone
+
+Languages
+
+Contact Information
+
+Social Accounts
+
+Brand Voice
+
+Brand Personality
+
+Business Policies
+
+Shipping Rules
+
+Return Policy
+
+Store Information
+
+==================================================
+AI BRAIN
+==================================================
+
+A Brain is the intelligence shared between multiple AI Agents.
+
+Each Brain contains:
+
+Knowledge Base
+
+Company Information
+
+FAQs
+
+Products
+
+Services
+
+Policies
+
+Pricing
+
+Instructions
+
+Documents
+
+Embeddings
+
+Vector Search
+
+Long-term Memory
+
+Agents connected to the same Brain automatically share knowledge.
+
+==================================================
+KNOWLEDGE BASE
+==================================================
+
+Support uploading:
+
+PDF
+
+DOCX
+
+TXT
+
+CSV
+
+Markdown
+
+Website URLs
+
+FAQ Lists
+
+Product Catalogs
+
+Manual Text
+
+After upload:
+
+Extract Text
+
+Clean Text
+
+Split into Chunks
+
+Generate Embeddings
+
+Store for Semantic Search
+
+Prepare for full RAG architecture.
+
+Never rely only on system prompts.
+
+==================================================
+AI AGENTS
+==================================================
+
+Each AI Agent has:
+
+Name
+
+Avatar
+
+Role
+
+Job
+
+Description
+
+Language
+
+Tone
+
+Personality
+
+Instructions
+
+Prompt
+
+Goal
+
+Emoji Level
+
+Humor Level
+
+Creativity
+
+Temperature
+
+Max Tokens
+
+Provider
+
+Model
+
+Status
+
+Every agent has its own:
+
+Memory
+
+Settings
+
+Analytics
+
+Performance
+
+Conversation Style
+
+==================================================
+CUSTOMER MEMORY
+==================================================
+
+Every customer stores:
+
+Instagram ID
+
+Username
+
+Display Name
+
+Avatar
+
+Tags
+
+Notes
+
+Purchase History
+
+Preferences
+
+Conversation Summary
+
+Important Facts
+
+Last Contact
+
+Sentiment
+
+Customer memory should survive forever.
+
+==================================================
+CONVERSATIONS
+==================================================
+
+Save every message.
+
+Incoming
+
+Outgoing
+
+Timestamp
+
+Provider
+
+Model
+
+Latency
+
+Token Usage
+
+Attachments
+
+Status
+
+Errors
+
+Conversation Summary
+
+==================================================
+AI MEMORY SYSTEM
+==================================================
+
+Never send full conversation history.
+
+Instead automatically create:
+
+Conversation Summaries
+
+Important Facts
+
+Preferences
+
+Events
+
+These summaries become long-term memory.
+
+==================================================
+PROMPT BUILDER
+==================================================
+
+Never hardcode prompts.
+
+Build prompts dynamically.
+
+Prompt structure:
+
+System
+
+↓
+
+Business
+
+↓
+
+Brain
+
+↓
+
+Knowledge Base
+
+↓
+
+Agent Personality
+
+↓
+
+Business Rules
+
+↓
+
+Customer Memory
+
+↓
+
+Conversation Summary
+
+↓
+
+Recent Messages
+
+↓
+
+Current User Message
+
+==================================================
+MULTIPLE AI PROVIDERS
+==================================================
+
+Support multiple providers.
+
+DeepSeek
+
+Gemini
+
+Future OpenAI
+
+Future Claude
+
+Future Qwen
+
+Future Grok
+
+Create Provider abstraction.
+
+Each provider supports unlimited API Keys.
+
+==================================================
+API KEY MANAGEMENT
+==================================================
+
+Each provider stores:
+
+Multiple Keys
+
+Priority
+
+Usage
+
+Errors
+
+Health
+
+Rate Limit
+
+Cooldown
+
+Status
+
+==================================================
+AI ROUTER
+==================================================
+
+Build an intelligent router.
+
+Features:
+
+Round Robin
+
+Priority
+
+Fallback
+
+Retry
+
+Health Check
+
+Cooldown
+
+Automatic Recovery
+
+Automatic Provider Switching
+
+Example:
+
+Simple questions
+
+↓
+
+DeepSeek
+
+Complex reasoning
+
+↓
+
+Gemini
+
+If provider fails
+
+↓
+
+Automatically switch
+
+Never interrupt the user.
+
+==================================================
+INSTAGRAM
+==================================================
+
+Prepare complete Meta Instagram Messaging API integration.
+
+Webhook Verification
+
+Receive Messages
+
+Reply Automatically
+
+Retry Failed Messages
+
+Duplicate Protection
+
+Queue Processing
+
+==================================================
+WORKFLOW ENGINE
+==================================================
+
+Create a visual workflow engine.
+
+Example:
+
+Customer asks for price
+
+↓
+
+Search Knowledge Base
+
+↓
+
+Generate Response
+
+↓
+
+Suggest Related Products
+
+Another example:
+
+Customer requests human
+
+↓
+
+Stop AI
+
+↓
+
+Assign Human Agent
+
+==================================================
+AGENT SKILLS
+==================================================
+
+Agents can enable or disable skills.
+
+Examples:
+
+Reply Messages
+
+Search Knowledge
+
+Remember Customers
+
+Translate
+
+Summarize
+
+Recommend Products
+
+Human Handover
+
+Generate Orders
+
+FAQ
+
+==================================================
+ANALYTICS
+==================================================
+
+Dashboard must include:
+
+Messages
+
+Customers
+
+Response Time
+
+Token Usage
+
+Provider Usage
+
+Costs
+
+Most Asked Questions
+
+Agent Performance
+
+Customer Satisfaction
+
+Growth
+
+==================================================
+SECURITY
+==================================================
+
+Encrypt API Keys.
+
+Validate all inputs.
+
+JWT Authentication.
+
+Role Permissions.
+
+Secure Cookies.
+
+Rate Limiting.
+
+Audit Logs.
+
+Secrets must never appear in frontend.
+
+==================================================
+CODE QUALITY
+==================================================
+
+Strict TypeScript.
+
+Reusable Components.
+
+Reusable Hooks.
+
+Reusable Services.
+
+No duplicate code.
+
+Clear naming.
+
+Production-ready folder structure.
+
+==================================================
+DOCUMENTATION
+==================================================
+
+Create and continuously maintain:
+
+README.md
+
+ARCHITECTURE.md
+
+DATABASE.md
+
+API.md
+
+PROJECT_PROGRESS.md
+
+PROJECT_TODO.md
+
+CHANGELOG.md
+
+Every completed task MUST immediately update PROJECT_PROGRESS.md.
+
+Every future task MUST immediately update PROJECT_TODO.md.
+
+Never continue development without updating these files.
+
+==================================================
+DEVELOPMENT PROCESS
+==================================================
+
+Start with architecture.
+
+Then project setup.
+
+Then authentication.
+
+Then database.
+
+Then dashboard.
+
+Then AI engine.
+
+Then Brain.
+
+Then Knowledge Base.
+
+Then AI Providers.
+
+Then API Router.
+
+Then Instagram.
+
+Then Analytics.
+
+Then Workflow Builder.
+
+Then final polish.
+
+Never skip steps.
+
+Never generate placeholder code.
+
+Every feature must be production-ready before moving to the next one.

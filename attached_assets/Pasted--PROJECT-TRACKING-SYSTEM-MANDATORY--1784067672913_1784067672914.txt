@@ -1,0 +1,224 @@
+==================================================
+PROJECT TRACKING SYSTEM (MANDATORY)
+==================================================
+
+Create a permanent project tracking system using Markdown files.
+
+The following files are required:
+
+1. PROJECT_STATUS.md
+2. PROJECT_PROGRESS.md
+3. PROJECT_TODO.md
+4. CHANGELOG.md
+5. DECISIONS.md
+
+
+==================================================
+PROJECT_STATUS.md
+==================================================
+
+This is the main project dashboard.
+
+It must always contain:
+
+# Project Overview
+
+Project Name:
+AgentHub AI
+
+Current Phase:
+
+Current Status:
+
+Overall Completion Percentage:
+
+Last Updated:
+
+Current Active Task:
+
+
+==================================================
+COMPLETED FEATURES
+==================================================
+
+Maintain a checklist of everything completed.
+
+Example:
+
+✅ Project initialization
+✅ Cloudflare setup
+✅ Authentication system
+✅ Database schema
+✅ AI Agent creation
+⬜ Instagram integration
+⬜ Knowledge Base
+⬜ Workflow Engine
+
+
+==================================================
+CURRENTLY WORKING ON
+==================================================
+
+Always show:
+
+Feature:
+
+Description:
+
+Started Date:
+
+Expected Result:
+
+Files Being Modified:
+
+
+==================================================
+NEXT TASKS
+==================================================
+
+Always list the next development steps in priority order.
+
+Example:
+
+1. Finish database migrations
+2. Create AI Provider system
+3. Add DeepSeek integration
+4. Add Gemini integration
+
+
+==================================================
+BLOCKERS
+==================================================
+
+If something prevents progress:
+
+Document:
+
+Problem:
+
+Reason:
+
+Possible Solutions:
+
+
+==================================================
+PROJECT_PROGRESS.md
+==================================================
+
+After every completed task, add:
+
+Date:
+
+Completed Feature:
+
+What was built:
+
+Files created:
+
+Files modified:
+
+Testing performed:
+
+Result:
+
+==================================================
+PROJECT_TODO.md
+==================================================
+
+Maintain all remaining work.
+
+Every task must have:
+
+ID
+
+Priority
+
+Feature
+
+Description
+
+Status
+
+Dependencies
+
+
+Example:
+
+TASK-001
+
+Priority: HIGH
+
+Feature:
+Instagram Webhook
+
+Status:
+Pending
+
+Dependencies:
+Meta Developer Setup
+
+
+==================================================
+CHANGELOG.md
+==================================================
+
+Record every important change.
+
+Format:
+
+Version:
+
+Date:
+
+Added:
+
+Changed:
+
+Fixed:
+
+
+==================================================
+DEVELOPMENT RULES
+==================================================
+
+After finishing ANY feature:
+
+1. Update PROJECT_STATUS.md first.
+2. Update PROJECT_PROGRESS.md.
+3. Move completed tasks from PROJECT_TODO.md.
+4. Add new discovered tasks.
+5. Update CHANGELOG.md.
+
+Never finish a coding session without updating these files.
+
+Before starting new work:
+
+Read PROJECT_STATUS.md first.
+
+Always continue from the last saved state.
+
+Never assume previous work is complete unless documented.
+
+==================================================
+FINAL REQUIREMENT
+==================================================
+
+At the beginning of every development session:
+
+Read:
+
+PROJECT_STATUS.md
+
+PROJECT_TODO.md
+
+CHANGELOG.md
+
+
+Then summarize:
+
+- What has been completed.
+- What is currently being built.
+- What remains.
+- The next recommended action.
+
+Do not start coding before understanding the current project state.

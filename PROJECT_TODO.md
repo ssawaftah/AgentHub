@@ -1,41 +1,58 @@
 # AgentHub AI — Todo
 
-## Phase 1: Foundation & Core Platform
+## Phase 1: Foundation & Core Platform ✅ مكتمل
 
-| ID | Priority | Feature | Description | Status | Dependencies |
-|----|----------|---------|-------------|--------|-------------|
-| TASK-001 | HIGH | Project Setup | Monorepo, Clerk auth, DB, OpenAPI | ✅ Done | — |
-| TASK-002 | HIGH | Database Schema | workspaces, businesses, agents, activity tables | ✅ Done | TASK-001 |
-| TASK-003 | HIGH | API Routes | CRUD for workspaces, businesses, agents | ✅ Done | TASK-002 |
-| TASK-004 | HIGH | Frontend UI | Dashboard, agents, businesses pages with Clerk auth | 🟡 In Progress | TASK-003 |
-| TASK-005 | MEDIUM | Seed Data | Example workspace/business/agent for new users | ⬜ Pending | TASK-003 |
+| ID | Feature | Status |
+|----|---------|--------|
+| TASK-001 | Project Setup + Auth + DB | ✅ Done |
+| TASK-002 | Database Schema (P1) | ✅ Done |
+| TASK-003 | API Routes (P1) | ✅ Done |
+| TASK-004 | Frontend UI (P1) | ✅ Done |
 
-## Phase 2: AI Engine
+---
 
-| ID | Priority | Feature | Description | Status | Dependencies |
-|----|----------|---------|-------------|--------|-------------|
-| TASK-010 | HIGH | AI Provider Abstraction | Provider interface for DeepSeek, Gemini | ⬜ Pending | TASK-001 |
-| TASK-011 | HIGH | API Key Management | Store/manage multiple API keys per provider | ⬜ Pending | TASK-010 |
-| TASK-012 | HIGH | AI Router | Round-robin, priority, fallback, retry | ⬜ Pending | TASK-011 |
-| TASK-013 | HIGH | AI Brain entity | Brain model linking agents to knowledge | ⬜ Pending | TASK-004 |
-| TASK-014 | HIGH | Knowledge Base uploads | PDF, TXT, DOCX, CSV, URL ingestion | ⬜ Pending | TASK-013 |
-| TASK-015 | HIGH | Embeddings + Vector Search | RAG architecture for semantic search | ⬜ Pending | TASK-014 |
-| TASK-016 | MEDIUM | Prompt Builder | Dynamic prompt construction system | ⬜ Pending | TASK-015 |
+## Phase 2: AI Engine ✅ مكتمل
 
-## Phase 3: Instagram Integration
+| ID | Priority | Feature | Status |
+|----|----------|---------|--------|
+| TASK-010 | HIGH | DB Schema — api_keys | ✅ Done |
+| TASK-011 | HIGH | DB Schema — ai_brains | ✅ Done |
+| TASK-012 | HIGH | DB Schema — knowledge_items | ✅ Done |
+| TASK-013 | HIGH | OpenAPI Spec Phase 2 | ✅ Done |
+| TASK-014 | HIGH | Codegen (re-generate) | ✅ Done |
+| TASK-015 | HIGH | Provider Abstraction Layer | ✅ Done |
+| TASK-016 | HIGH | API Routes — api_keys | ✅ Done |
+| TASK-017 | HIGH | API Routes — ai_brains | ✅ Done |
+| TASK-018 | HIGH | API Routes — knowledge_items | ✅ Done |
+| TASK-019 | HIGH | API Routes — agent chat | ✅ Done |
+| TASK-020 | HIGH | Frontend — Settings (API Keys) | ✅ Done |
+| TASK-021 | HIGH | Frontend — AI Brains Page | ✅ Done |
+| TASK-022 | HIGH | Frontend — Brain Detail + Knowledge Base | ✅ Done |
+| TASK-023 | HIGH | Frontend — Agent Chat Tester | ✅ Done |
 
-| ID | Priority | Feature | Description | Status | Dependencies |
-|----|----------|---------|-------------|--------|-------------|
-| TASK-020 | HIGH | Instagram Webhook | Verify + receive Instagram DM webhooks | ⬜ Pending | Meta Developer Setup |
-| TASK-021 | HIGH | Message Processing | Queue, dedup, route messages to AI | ⬜ Pending | TASK-020 |
-| TASK-022 | HIGH | Auto-Reply | Generate + send replies via Instagram API | ⬜ Pending | TASK-021, TASK-016 |
-| TASK-023 | MEDIUM | Customer Memory | Store customer profiles, conversation summaries | ⬜ Pending | TASK-022 |
+---
 
-## Phase 4: Analytics & Polish
+## Phase 3: Instagram Integration ⬜ لم يبدأ
 
-| ID | Priority | Feature | Description | Status | Dependencies |
-|----|----------|---------|-------------|--------|-------------|
-| TASK-030 | MEDIUM | Analytics Dashboard | Messages, response time, token usage, costs | ⬜ Pending | TASK-022 |
-| TASK-031 | MEDIUM | Agent Skills system | Enable/disable skills per agent | ⬜ Pending | TASK-013 |
-| TASK-032 | LOW | Workflow Engine | Visual workflow builder | ⬜ Pending | TASK-031 |
-| TASK-033 | LOW | Multi-channel | WhatsApp, Messenger, Telegram | ⬜ Pending | TASK-022 |
+| ID | Priority | Feature | Description | Status |
+|----|----------|---------|-------------|--------|
+| TASK-030 | HIGH | Instagram App Setup | Meta Developer account, App ID, App Secret | ⬜ Pending |
+| TASK-031 | HIGH | Instagram Account Linking | Store IG account tokens per workspace in DB | ⬜ Pending |
+| TASK-032 | HIGH | Webhook Endpoint | `GET /webhook/instagram` verify token, `POST /webhook/instagram` receive events | ⬜ Pending |
+| TASK-033 | HIGH | Message Queue | Dedup incoming messages, async processing | ⬜ Pending |
+| TASK-034 | HIGH | Auto-Reply Engine | Fetch agent → build context → call provider → send via IG API | ⬜ Pending |
+| TASK-035 | MEDIUM | Customer Memory | Store customer profiles + conversation summaries | ⬜ Pending |
+| TASK-036 | MEDIUM | Frontend — Instagram Connect | OAuth flow, account status, webhook status | ⬜ Pending |
+
+---
+
+## Phase 4: Analytics & Polish ⬜ لم يبدأ
+
+| ID | Priority | Feature | Description | Status |
+|----|----------|---------|-------------|--------|
+| TASK-040 | HIGH | Token Usage Tracking | Record tokensUsed per chat in DB | ⬜ Pending |
+| TASK-041 | MEDIUM | Analytics Dashboard | Charts: messages/day, response time, cost, top agents | ⬜ Pending |
+| TASK-042 | MEDIUM | Agent Skills System | Skill toggles per agent (order tracking, returns, FAQs) | ⬜ Pending |
+| TASK-043 | MEDIUM | Prompt Template Library | Pre-built templates by industry/role | ⬜ Pending |
+| TASK-044 | LOW | Workflow Engine | Visual automation builder | ⬜ Pending |
+| TASK-045 | LOW | Multi-channel | WhatsApp, Messenger, Telegram | ⬜ Pending |

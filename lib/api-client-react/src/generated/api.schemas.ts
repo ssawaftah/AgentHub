@@ -339,6 +339,8 @@ export const ActivityItemType = {
   agent_deactivated: 'agent_deactivated',
   business_created: 'business_created',
   workspace_created: 'workspace_created',
+  brain_created: 'brain_created',
+  key_added: 'key_added',
 } as const;
 
 export interface ActivityItem {
@@ -349,5 +351,143 @@ export interface ActivityItem {
   /** @nullable */
   entityId?: number | null;
   createdAt: string;
+}
+
+export type ApiKeyProvider = typeof ApiKeyProvider[keyof typeof ApiKeyProvider];
+
+
+export const ApiKeyProvider = {
+  deepseek: 'deepseek',
+  gemini: 'gemini',
+  openai: 'openai',
+  claude: 'claude',
+} as const;
+
+export interface ApiKey {
+  id: number;
+  workspaceId: number;
+  provider: ApiKeyProvider;
+  label: string;
+  keyPreview: string;
+  createdAt: string;
+}
+
+export type ApiKeyInputProvider = typeof ApiKeyInputProvider[keyof typeof ApiKeyInputProvider];
+
+
+export const ApiKeyInputProvider = {
+  deepseek: 'deepseek',
+  gemini: 'gemini',
+  openai: 'openai',
+  claude: 'claude',
+} as const;
+
+export interface ApiKeyInput {
+  provider: ApiKeyInputProvider;
+  /** @minLength 1 */
+  label: string;
+  /** @minLength 8 */
+  key: string;
+}
+
+export interface ApiKeyTestResult {
+  ok: boolean;
+  message?: string;
+}
+
+export interface AiBrain {
+  id: number;
+  workspaceId: number;
+  /** @nullable */
+  agentId?: number | null;
+  name: string;
+  /** @nullable */
+  systemPrompt?: string | null;
+  /** @nullable */
+  fallbackMessage?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AiBrainInput {
+  /** @minLength 1 */
+  name: string;
+  agentId?: number;
+  systemPrompt?: string;
+  fallbackMessage?: string;
+}
+
+export interface AiBrainUpdate {
+  /** @minLength 1 */
+  name?: string;
+  agentId?: number;
+  systemPrompt?: string;
+  fallbackMessage?: string;
+}
+
+export type KnowledgeItemType = typeof KnowledgeItemType[keyof typeof KnowledgeItemType];
+
+
+export const KnowledgeItemType = {
+  text: 'text',
+  url: 'url',
+  faq: 'faq',
+} as const;
+
+export interface KnowledgeItem {
+  id: number;
+  workspaceId: number;
+  /** @nullable */
+  brainId?: number | null;
+  type: KnowledgeItemType;
+  title: string;
+  content: string;
+  /** @nullable */
+  sourceUrl?: string | null;
+  createdAt: string;
+}
+
+export type KnowledgeItemInputType = typeof KnowledgeItemInputType[keyof typeof KnowledgeItemInputType];
+
+
+export const KnowledgeItemInputType = {
+  text: 'text',
+  url: 'url',
+  faq: 'faq',
+} as const;
+
+export interface KnowledgeItemInput {
+  type?: KnowledgeItemInputType;
+  /** @minLength 1 */
+  title: string;
+  /** @minLength 1 */
+  content: string;
+  sourceUrl?: string;
+}
+
+export type ChatInputConversationHistoryItemRole = typeof ChatInputConversationHistoryItemRole[keyof typeof ChatInputConversationHistoryItemRole];
+
+
+export const ChatInputConversationHistoryItemRole = {
+  user: 'user',
+  assistant: 'assistant',
+} as const;
+
+export type ChatInputConversationHistoryItem = {
+  role: ChatInputConversationHistoryItemRole;
+  content: string;
+};
+
+export interface ChatInput {
+  /** @minLength 1 */
+  message: string;
+  conversationHistory?: ChatInputConversationHistoryItem[];
+}
+
+export interface ChatReply {
+  reply: string;
+  provider: string;
+  model: string;
+  tokensUsed?: number;
 }
 

@@ -16,4 +16,6 @@ export const ActivityItemType = {
   agent_deactivated: 'agent_deactivated',
   business_created: 'business_created',
   workspace_created: 'workspace_created',
+  brain_created: 'brain_created',
+  key_added: 'key_added',
 } as const;

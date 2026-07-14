@@ -1,11 +1,12 @@
 import { useEffect, useState, useRef } from "react";
 import { useRoute, Link } from "wouter";
-import { ArrowLeft, Bot, Save, Loader2, PlayCircle, StopCircle, RefreshCw } from "lucide-react";
+import { ArrowLeft, Bot, Save, Loader2, PlayCircle, StopCircle, RefreshCw, Send, AlertTriangle } from "lucide-react";
 import { 
   useGetAgent, 
   useUpdateAgent, 
   useToggleAgentStatus,
   useListBusinesses,
+  useChatWithAgent,
   getGetAgentQueryKey,
   AgentTone,
   AgentUpdateProvider
@@ -42,10 +43,24 @@ export default function AgentDetailPage() {
 
   const updateAgent = useUpdateAgent();
   const toggleStatus = useToggleAgentStatus();
+  const chatWithAgent = useChatWithAgent();
 
   // Local state for edits
   const [formData, setFormData] = useState<any>({});
   const initializedId = useRef<number | null>(null);
+
+  // Chat Tester state
+  const [chatInput, setChatInput] = useState("");
+  const [chatHistory, setChatHistory] = useState<Array<{ role: 'user' | 'assistant', content: string, tokensUsed?: number }>>([]);
+  const chatEndRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [chatHistory]);
 
   useEffect(() => {
     if (agent && initializedId.current !== agent.id) {
@@ -99,6 +114,35 @@ export default function AgentDetailPage() {
           old ? { ...old, status: data.status } : old
         );
         toast({ title: `Agent is now ${data.status}` });
+      }
+    });
+  };
+
+  const handleSendMessage = () => {
+    if (!agentId || !chatInput.trim()) return;
+
+    const userMessage = chatInput.trim();
+    const newHistory = [...chatHistory, { role: 'user' as const, content: userMessage }];
+    setChatHistory(newHistory);
+    setChatInput("");
+
+    chatWithAgent.mutate({
+      agentId,
+      data: {
+        message: userMessage,
+        conversationHistory: chatHistory.map(h => ({ role: h.role, content: h.content }))
+      }
+    }, {
+      onSuccess: (data) => {
+        setChatHistory(prev => [...prev, { 
+          role: 'assistant', 
+          content: data.reply,
+          tokensUsed: data.tokensUsed
+        }]);
+      },
+      onError: (err) => {
+        toast({ title: "Chat failed", description: err.message, variant: "destructive" });
+        // Optionally remove the user message if it failed
       }
     });
   };
@@ -189,6 +233,7 @@ export default function AgentDetailPage() {
           <TabsTrigger value="identity" className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none px-6 py-3">Identity & Model</TabsTrigger>
           <TabsTrigger value="personality" className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none px-6 py-3">Personality</TabsTrigger>
           <TabsTrigger value="instructions" className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none px-6 py-3">Prompt & Instructions</TabsTrigger>
+          <TabsTrigger value="chat" className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none px-6 py-3">Chat Tester</TabsTrigger>
         </TabsList>
         
         <div className="mt-6">
@@ -381,6 +426,75 @@ export default function AgentDetailPage() {
                   />
                 </div>
               </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="chat" className="focus-visible:outline-none">
+            <Card className="border-border/50 h-[600px] flex flex-col">
+              <CardHeader className="flex flex-row items-center justify-between pb-3 border-b border-border/50">
+                <div>
+                  <CardTitle>Chat Tester</CardTitle>
+                  <CardDescription>Test your agent's behavior and knowledge in real-time.</CardDescription>
+                </div>
+                <Button variant="outline" size="sm" onClick={() => setChatHistory([])}>
+                  Clear conversation
+                </Button>
+              </CardHeader>
+              
+              <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                {chatHistory.length === 0 ? (
+                  <div className="h-full flex flex-col items-center justify-center text-center text-muted-foreground p-6">
+                    <Bot className="h-12 w-12 mb-4 opacity-50" />
+                    <p>Start a conversation to test how <strong>{agent.name}</strong> responds based on its identity, tone, and knowledge.</p>
+                  </div>
+                ) : (
+                  chatHistory.map((msg, idx) => (
+                    <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                      <div className={`max-w-[80%] rounded-2xl px-4 py-3 ${
+                        msg.role === 'user' 
+                          ? 'bg-primary text-primary-foreground rounded-tr-sm' 
+                          : 'bg-secondary/50 border border-border/50 rounded-tl-sm'
+                      }`}>
+                        <div className="whitespace-pre-wrap text-sm leading-relaxed">{msg.content}</div>
+                        {msg.role === 'assistant' && msg.tokensUsed !== undefined && (
+                          <div className="text-[10px] text-muted-foreground/60 mt-2 font-mono text-right">
+                            {msg.tokensUsed} tokens
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))
+                )}
+                {chatWithAgent.isPending && (
+                  <div className="flex justify-start">
+                    <div className="max-w-[80%] rounded-2xl px-4 py-3 bg-secondary/50 border border-border/50 rounded-tl-sm flex items-center gap-2">
+                      <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                      <span className="text-xs text-muted-foreground">Thinking...</span>
+                    </div>
+                  </div>
+                )}
+                <div ref={chatEndRef} />
+              </div>
+              
+              <div className="p-4 border-t border-border/50 bg-secondary/10">
+                <form 
+                  onSubmit={(e) => { e.preventDefault(); handleSendMessage(); }}
+                  className="flex items-center gap-2"
+                >
+                  <Input 
+                    placeholder="Type a message to test your agent..." 
+                    value={chatInput}
+                    onChange={(e) => setChatInput(e.target.value)}
+                    disabled={chatWithAgent.isPending}
+                    className="flex-1"
+                  />
+                  <Button type="submit" size="icon" disabled={!chatInput.trim() || chatWithAgent.isPending}>
+                    <Send className="h-4 w-4" />
+                  </Button>
+                </form>
+                {/* Note: The warning banner would be shown here if we tracked API key existence in this component's scope, 
+                    but we rely on the API client returning an error toast if missing. */}
+              </div>
             </Card>
           </TabsContent>
         </div>

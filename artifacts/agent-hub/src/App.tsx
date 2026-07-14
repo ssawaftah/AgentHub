@@ -16,6 +16,9 @@ import WorkspacesPage from "@/pages/WorkspacesPage";
 import BusinessesPage from "@/pages/BusinessesPage";
 import AgentsPage from "@/pages/AgentsPage";
 import AgentDetailPage from "@/pages/AgentDetailPage";
+import SettingsPage from "@/pages/SettingsPage";
+import BrainsPage from "@/pages/BrainsPage";
+import BrainDetailPage from "@/pages/BrainDetailPage";
 
 const queryClient = new QueryClient();
 
@@ -203,7 +206,16 @@ function ClerkProviderWithRoutes() {
               <Route path="/agents/:id">
                 <ProtectedRoute component={AgentDetailPage} />
               </Route>
-              
+              <Route path="/brains">
+                <ProtectedRoute component={BrainsPage} />
+              </Route>
+              <Route path="/brains/:id">
+                <ProtectedRoute component={BrainDetailPage} />
+              </Route>
+              <Route path="/settings">
+                <ProtectedRoute component={SettingsPage} />
+              </Route>
+
               <Route>
                 <div className="flex min-h-[100dvh] flex-col items-center justify-center bg-background px-4 text-center">
                   <h1 className="text-4xl font-bold tracking-tight text-foreground">404</h1>

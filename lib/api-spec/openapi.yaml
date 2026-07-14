@@ -18,6 +18,10 @@ tags:
     description: AI Agent management
   - name: dashboard
     description: Dashboard and analytics
+  - name: api-keys
+    description: API Key management
+  - name: brains
+    description: AI Brain and Knowledge Base management
 
 paths:
   /healthz:
@@ -354,6 +358,275 @@ paths:
                 $ref: "#/components/schemas/Agent"
         "404":
           description: Not found
+
+  # ─── API Keys ─────────────────────────────────────────────────────────────
+  /workspaces/{workspaceId}/api-keys:
+    get:
+      operationId: listApiKeys
+      tags: [api-keys]
+      summary: List API keys for a workspace (masked)
+      parameters:
+        - name: workspaceId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of masked API keys
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiKey"
+    post:
+      operationId: createApiKey
+      tags: [api-keys]
+      summary: Add an API key to a workspace
+      parameters:
+        - name: workspaceId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApiKeyInput"
+      responses:
+        "201":
+          description: Created API key (masked)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiKey"
+
+  /api-keys/{keyId}:
+    delete:
+      operationId: deleteApiKey
+      tags: [api-keys]
+      summary: Delete an API key
+      parameters:
+        - name: keyId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /api-keys/{keyId}/test:
+    post:
+      operationId: testApiKey
+      tags: [api-keys]
+      summary: Test if an API key is valid
+      parameters:
+        - name: keyId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Test result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiKeyTestResult"
+
+  # ─── AI Brains ────────────────────────────────────────────────────────────
+  /workspaces/{workspaceId}/brains:
+    get:
+      operationId: listBrains
+      tags: [brains]
+      summary: List AI brains for a workspace
+      parameters:
+        - name: workspaceId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of brains
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AiBrain"
+    post:
+      operationId: createBrain
+      tags: [brains]
+      summary: Create a new AI brain
+      parameters:
+        - name: workspaceId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AiBrainInput"
+      responses:
+        "201":
+          description: Created brain
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AiBrain"
+
+  /brains/{brainId}:
+    get:
+      operationId: getBrain
+      tags: [brains]
+      summary: Get an AI brain
+      parameters:
+        - name: brainId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Brain
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AiBrain"
+        "404":
+          description: Not found
+    patch:
+      operationId: updateBrain
+      tags: [brains]
+      summary: Update an AI brain
+      parameters:
+        - name: brainId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AiBrainUpdate"
+      responses:
+        "200":
+          description: Updated brain
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AiBrain"
+        "404":
+          description: Not found
+    delete:
+      operationId: deleteBrain
+      tags: [brains]
+      summary: Delete an AI brain
+      parameters:
+        - name: brainId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  # ─── Knowledge Items ──────────────────────────────────────────────────────
+  /brains/{brainId}/knowledge:
+    get:
+      operationId: listKnowledgeItems
+      tags: [brains]
+      summary: List knowledge items for a brain
+      parameters:
+        - name: brainId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of knowledge items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/KnowledgeItem"
+    post:
+      operationId: createKnowledgeItem
+      tags: [brains]
+      summary: Add a knowledge item to a brain
+      parameters:
+        - name: brainId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/KnowledgeItemInput"
+      responses:
+        "201":
+          description: Created knowledge item
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/KnowledgeItem"
+
+  /knowledge/{itemId}:
+    delete:
+      operationId: deleteKnowledgeItem
+      tags: [brains]
+      summary: Delete a knowledge item
+      parameters:
+        - name: itemId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  # ─── Agent Chat (test) ────────────────────────────────────────────────────
+  /agents/{agentId}/chat:
+    post:
+      operationId: chatWithAgent
+      tags: [agents]
+      summary: Send a test message to an agent
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChatInput"
+      responses:
+        "200":
+          description: Agent reply
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChatReply"
 
   # ─── Dashboard ────────────────────────────────────────────────────────────
   /workspaces/{workspaceId}/dashboard:
@@ -764,7 +1037,7 @@ components:
           type: integer
         type:
           type: string
-          enum: [agent_created, agent_updated, agent_activated, agent_deactivated, business_created, workspace_created]
+          enum: [agent_created, agent_updated, agent_activated, agent_deactivated, business_created, workspace_created, brain_created, key_added]
         title:
           type: string
         description:
@@ -774,3 +1047,170 @@ components:
         createdAt:
           type: string
           format: date-time
+
+    # ─── API Keys ─────────────────────────────────────────────────────────────
+    ApiKey:
+      type: object
+      required: [id, workspaceId, provider, label, keyPreview, createdAt]
+      properties:
+        id:
+          type: integer
+        workspaceId:
+          type: integer
+        provider:
+          type: string
+          enum: [deepseek, gemini, openai, claude]
+        label:
+          type: string
+        keyPreview:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    ApiKeyInput:
+      type: object
+      required: [provider, label, key]
+      properties:
+        provider:
+          type: string
+          enum: [deepseek, gemini, openai, claude]
+        label:
+          type: string
+          minLength: 1
+        key:
+          type: string
+          minLength: 8
+
+    ApiKeyTestResult:
+      type: object
+      required: [ok]
+      properties:
+        ok:
+          type: boolean
+        message:
+          type: string
+
+    # ─── AI Brain ─────────────────────────────────────────────────────────────
+    AiBrain:
+      type: object
+      required: [id, workspaceId, name, createdAt, updatedAt]
+      properties:
+        id:
+          type: integer
+        workspaceId:
+          type: integer
+        agentId:
+          type: ["integer", "null"]
+        name:
+          type: string
+        systemPrompt:
+          type: ["string", "null"]
+        fallbackMessage:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    AiBrainInput:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+          minLength: 1
+        agentId:
+          type: integer
+        systemPrompt:
+          type: string
+        fallbackMessage:
+          type: string
+
+    AiBrainUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+        agentId:
+          type: integer
+        systemPrompt:
+          type: string
+        fallbackMessage:
+          type: string
+
+    # ─── Knowledge Items ──────────────────────────────────────────────────────
+    KnowledgeItem:
+      type: object
+      required: [id, workspaceId, type, title, content, createdAt]
+      properties:
+        id:
+          type: integer
+        workspaceId:
+          type: integer
+        brainId:
+          type: ["integer", "null"]
+        type:
+          type: string
+          enum: [text, url, faq]
+        title:
+          type: string
+        content:
+          type: string
+        sourceUrl:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+          format: date-time
+
+    KnowledgeItemInput:
+      type: object
+      required: [title, content]
+      properties:
+        type:
+          type: string
+          enum: [text, url, faq]
+        title:
+          type: string
+          minLength: 1
+        content:
+          type: string
+          minLength: 1
+        sourceUrl:
+          type: string
+
+    # ─── Chat ─────────────────────────────────────────────────────────────────
+    ChatInput:
+      type: object
+      required: [message]
+      properties:
+        message:
+          type: string
+          minLength: 1
+        conversationHistory:
+          type: array
+          items:
+            type: object
+            required: [role, content]
+            properties:
+              role:
+                type: string
+                enum: [user, assistant]
+              content:
+                type: string
+
+    ChatReply:
+      type: object
+      required: [reply, provider, model]
+      properties:
+        reply:
+          type: string
+        provider:
+          type: string
+        model:
+          type: string
+        tokensUsed:
+          type: integer

@@ -2,35 +2,45 @@
 
 ---
 
-## 2026-07-14 — Phase 1: Foundation
+## 2026-07-14 — Phase 2: AI Engine (Frontend — Complete)
 
-### Completed: Project Setup & Architecture
+### Completed: Settings، AI Brains، Brain Detail + Knowledge Base، Agent Chat Tester
 
-**What was built:**
-- Monorepo structure with pnpm workspaces (Express API server + React/Vite frontend)
-- Clerk authentication provisioned and wired (proxy middleware, clerkMiddleware on Express, ClerkProvider on frontend)
-- OpenAPI specification for Phase 1 entities: workspaces, businesses, agents, dashboard, activity
-- Code generation: React Query hooks + Zod validation schemas via Orval
-- PostgreSQL database schema: workspaces, businesses, agents, activity tables (Drizzle ORM)
-- Full REST API: CRUD for all Phase 1 entities + dashboard summary + recent activity
-- Activity log: automatic activity entries on agent/business create/update/toggle
-- Frontend scaffold with design subagent building the full UI
+**ما تم بناؤه:**
 
-**Files created:**
-- `lib/api-spec/openapi.yaml` — Full OpenAPI 3.1 spec
-- `lib/db/src/schema/workspaces.ts`
-- `lib/db/src/schema/businesses.ts`
-- `lib/db/src/schema/agents.ts`
-- `lib/db/src/schema/activity.ts`
-- `artifacts/api-server/src/routes/workspaces.ts`
-- `artifacts/api-server/src/routes/businesses.ts`
-- `artifacts/api-server/src/routes/agents.ts`
-- `artifacts/api-server/src/middlewares/clerkProxyMiddleware.ts`
-- `PROJECT_STATUS.md`, `PROJECT_TODO.md`, `PROJECT_PROGRESS.md`, `CHANGELOG.md`, `DECISIONS.md`
+**Settings Page (`/settings`)**
+- إدارة مفاتيح API لكل workspace مع test button حقيقي يختبر المفتاح على المزود مباشرة
+- color-coded provider cards، show/hide key input، masked display
 
-**Files modified:**
-- `artifacts/api-server/src/app.ts` — Added Clerk proxy + clerkMiddleware
-- `artifacts/api-server/src/routes/index.ts` — Registered all route modules
-- `lib/db/src/schema/index.ts` — Exported all tables
+**AI Brains Page (`/brains`)**
+- إنشاء وإدارة "الأدمغة" الذكية — كل brain يحتوي system prompt + قاعدة معرفة
+- ربط brain بوكيل محدد أو تركه عاماً
 
-**Result:** Backend fully functional, DB schema pushed, frontend build in progress
+**Brain Detail + Knowledge Base (`/brains/:id`)**
+- تحرير inline لجميع إعدادات الـ brain
+- إضافة/حذف knowledge items (نص/رابط/FAQ) مع type badges ملونة
+
+**Agent Chat Tester**
+- tab رابع في صفحة Agent Detail
+- محادثة متعددة الأدوار (multi-turn) مع الوكيل عبر مزود AI حقيقي
+- حقن context تلقائي من brain + knowledge base
+
+**Navigation Update**
+- "AI Brains" و "Settings" في sidebar
+- App.tsx routes مسجّلة
+
+---
+
+## 2026-07-14 — Phase 2: AI Engine (Backend — Complete)
+
+**3 جداول جديدة:** api_keys، ai_brains، knowledge_items
+**طبقة Providers:** Gemini، DeepSeek، OpenAI، Claude
+**10 endpoints جديدة:** api-keys CRUD+test، brains CRUD، knowledge CRUD، agent chat
+
+---
+
+## 2026-07-14 — Phase 1: Foundation (Complete)
+
+**البنية التحتية:** Monorepo + Clerk + PostgreSQL + Drizzle + Express + React/Vite
+**Backend:** Full REST API لـ Phase 1
+**Frontend:** Landing، Dashboard (Recharts)، Agents (3-step wizard)، Businesses، Workspaces، Auth

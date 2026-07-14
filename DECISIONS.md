@@ -1,31 +1,51 @@
 # Architecture Decisions
 
-## AD-001: Infrastructure Adaptation (Replit vs Cloudflare)
-
-**Decision:** Use Express + PostgreSQL on Replit instead of Cloudflare Workers + D1
-**Reason:** Replit's environment provides pre-configured PostgreSQL and Express, which is where this project is hosted. Cloudflare Workers is the target deployment stack but not available in the development environment.
-**Impact:** Drizzle ORM syntax is identical for D1 and PostgreSQL, so the migration path is clean. Express routing patterns are equivalent to Hono (Cloudflare's preferred framework).
-
-## AD-002: Clerk for Authentication
-
-**Decision:** Use Replit-managed Clerk for authentication instead of custom JWT
-**Reason:** The spec calls for JWT authentication. Clerk provides JWT-based sessions with cookie transport on web, is fully managed (no user DB to maintain), and supports multiple OAuth providers out of the box.
-**Impact:** All protected routes use `getAuth(req)` from `@clerk/express`. Frontend uses session cookies — no manual token handling.
-
-## AD-003: Multi-tenant via ownerId on Workspaces
-
-**Decision:** Workspaces are owned by Clerk userId. All data is workspace-scoped.
-**Reason:** Simple, performant tenant isolation. Each workspace is isolated via `workspace_id` foreign keys. Users can own multiple workspaces.
-**Impact:** Every API route filters by ownerId on workspace queries. Downstream entities (businesses, agents) are cascade-deleted when workspace is deleted.
-
-## AD-004: Activity Log Table
-
-**Decision:** Use a simple activity table instead of an event sourcing system
-**Reason:** Phase 1 needs basic activity feed. A full event sourcing system adds complexity without immediate value.
-**Impact:** Activity entries are written as a side effect of mutations. Failures are silently ignored (`.catch(() => {})`) to avoid failing the main mutation.
-
 ## AD-005: Phase-by-Phase Development
 
 **Decision:** Build in strict phases. Never build AI features before the core platform is solid.
-**Reason:** The spec explicitly requires milestone-based development. The core platform (auth, workspaces, businesses, agents) must be production-ready before the AI engine is built.
-**Impact:** Phase 2 (AI engine) starts only after Phase 1 UI and APIs are complete and tested.
+**Reason:** The spec explicitly requires milestone-based development.
+**Impact:** Phase 2 (AI engine) starts only after Phase 1 is complete and tested.
+
+## AD-006: API Key Storage Strategy
+
+**Decision:** Store API keys in plaintext in DB for development. Add encryption layer before production.
+**Reason:** Implementing AES-256 encryption adds complexity. The DB is already behind auth + network isolation. For dev speed, plaintext is acceptable with a clear TODO.
+**How to apply:** Before deploying to production, wrap `encryptedKey` with AES-256-GCM using a `KEY_ENCRYPTION_SECRET` environment variable. The column name stays the same.
+**Note:** Keys are NEVER returned via API — only `keyPreview` (last 4 chars) is exposed.
+
+## AD-007: Provider Abstraction Pattern
+
+**Decision:** Use a simple class-based provider pattern with a factory function, not a plugin registry.
+**Reason:** Only 4 providers (Gemini, DeepSeek, OpenAI, Claude) are needed for Phase 2. A factory function (`getProvider(provider, apiKey)`) is simpler and type-safe without over-engineering.
+**How to apply:** Add new providers by creating a new class implementing `IProvider` and adding it to the factory switch in `lib/providers/index.ts`.
+
+## AD-008: Knowledge Base Context Injection
+
+**Decision:** Inject knowledge items as plain text in the system prompt (not vector search / RAG).
+**Reason:** Phase 2 needs a working knowledge base quickly. Vector embeddings and RAG are Phase 3 optimizations. Injecting the top 10 knowledge items as text works for small knowledge bases (<50 items).
+**How to apply:** When scaling to larger knowledge bases, replace the top-10 select with a vector similarity search.
+
+## AD-009: Multi-tenant API Key Selection
+
+**Decision:** When chatting, select the first available API key from the workspace (not provider-matched).
+**Reason:** Early implementation simplicity. Most workspaces will start with one key.
+**How to apply:** In a future iteration, filter `apiKeysTable` by `provider = agent.provider` to use the exact provider's key. The column and query are already structured for this.
+
+---
+
+## AD-001: Infrastructure Adaptation (Replit vs Cloudflare)
+
+**Decision:** Use Express + PostgreSQL on Replit instead of Cloudflare Workers + D1.
+**Why:** Replit's environment provides pre-configured PostgreSQL and Express. Drizzle ORM syntax is identical for D1 and PostgreSQL, so migration is clean.
+
+## AD-002: Clerk for Authentication
+
+**Decision:** Use Replit-managed Clerk. All protected routes use `getAuth(req)`. Frontend uses session cookies — no manual token handling.
+
+## AD-003: Multi-tenant via ownerId on Workspaces
+
+**Decision:** Workspaces owned by Clerk userId. All data workspace-scoped via FK cascade.
+
+## AD-004: Activity Log Table
+
+**Decision:** Simple activity table instead of event sourcing. Failures silently ignored (`.catch(() => {})`) to avoid failing main mutations.

@@ -591,6 +591,268 @@ export const ToggleAgentStatusResponse = zod.object({
 
 
 /**
+ * @summary List API keys for a workspace (masked)
+ */
+export const ListApiKeysParams = zod.object({
+  "workspaceId": zod.coerce.number()
+})
+
+export const ListApiKeysResponseItem = zod.object({
+  "id": zod.number(),
+  "workspaceId": zod.number(),
+  "provider": zod.enum(['deepseek', 'gemini', 'openai', 'claude']),
+  "label": zod.string(),
+  "keyPreview": zod.string(),
+  "createdAt": zod.coerce.date()
+})
+export const ListApiKeysResponse = zod.array(ListApiKeysResponseItem)
+
+
+/**
+ * @summary Add an API key to a workspace
+ */
+export const CreateApiKeyParams = zod.object({
+  "workspaceId": zod.coerce.number()
+})
+
+
+export const createApiKeyBodyKeyMin = 8;
+
+
+
+export const CreateApiKeyBody = zod.object({
+  "provider": zod.enum(['deepseek', 'gemini', 'openai', 'claude']),
+  "label": zod.string().min(1),
+  "key": zod.string().min(createApiKeyBodyKeyMin)
+})
+
+export const CreateApiKeyResponse = zod.object({
+  "id": zod.number(),
+  "workspaceId": zod.number(),
+  "provider": zod.enum(['deepseek', 'gemini', 'openai', 'claude']),
+  "label": zod.string(),
+  "keyPreview": zod.string(),
+  "createdAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Delete an API key
+ */
+export const DeleteApiKeyParams = zod.object({
+  "keyId": zod.coerce.number()
+})
+
+export const DeleteApiKeyResponse = zod.void()
+
+
+/**
+ * @summary Test if an API key is valid
+ */
+export const TestApiKeyParams = zod.object({
+  "keyId": zod.coerce.number()
+})
+
+export const TestApiKeyResponse = zod.object({
+  "ok": zod.boolean(),
+  "message": zod.string().optional()
+})
+
+
+/**
+ * @summary List AI brains for a workspace
+ */
+export const ListBrainsParams = zod.object({
+  "workspaceId": zod.coerce.number()
+})
+
+export const ListBrainsResponseItem = zod.object({
+  "id": zod.number(),
+  "workspaceId": zod.number(),
+  "agentId": zod.number().nullish(),
+  "name": zod.string(),
+  "systemPrompt": zod.string().nullish(),
+  "fallbackMessage": zod.string().nullish(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+export const ListBrainsResponse = zod.array(ListBrainsResponseItem)
+
+
+/**
+ * @summary Create a new AI brain
+ */
+export const CreateBrainParams = zod.object({
+  "workspaceId": zod.coerce.number()
+})
+
+
+
+
+export const CreateBrainBody = zod.object({
+  "name": zod.string().min(1),
+  "agentId": zod.number().optional(),
+  "systemPrompt": zod.string().optional(),
+  "fallbackMessage": zod.string().optional()
+})
+
+export const CreateBrainResponse = zod.object({
+  "id": zod.number(),
+  "workspaceId": zod.number(),
+  "agentId": zod.number().nullish(),
+  "name": zod.string(),
+  "systemPrompt": zod.string().nullish(),
+  "fallbackMessage": zod.string().nullish(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Get an AI brain
+ */
+export const GetBrainParams = zod.object({
+  "brainId": zod.coerce.number()
+})
+
+export const GetBrainResponse = zod.object({
+  "id": zod.number(),
+  "workspaceId": zod.number(),
+  "agentId": zod.number().nullish(),
+  "name": zod.string(),
+  "systemPrompt": zod.string().nullish(),
+  "fallbackMessage": zod.string().nullish(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Update an AI brain
+ */
+export const UpdateBrainParams = zod.object({
+  "brainId": zod.coerce.number()
+})
+
+
+
+
+export const UpdateBrainBody = zod.object({
+  "name": zod.string().min(1).optional(),
+  "agentId": zod.number().optional(),
+  "systemPrompt": zod.string().optional(),
+  "fallbackMessage": zod.string().optional()
+})
+
+export const UpdateBrainResponse = zod.object({
+  "id": zod.number(),
+  "workspaceId": zod.number(),
+  "agentId": zod.number().nullish(),
+  "name": zod.string(),
+  "systemPrompt": zod.string().nullish(),
+  "fallbackMessage": zod.string().nullish(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Delete an AI brain
+ */
+export const DeleteBrainParams = zod.object({
+  "brainId": zod.coerce.number()
+})
+
+export const DeleteBrainResponse = zod.void()
+
+
+/**
+ * @summary List knowledge items for a brain
+ */
+export const ListKnowledgeItemsParams = zod.object({
+  "brainId": zod.coerce.number()
+})
+
+export const ListKnowledgeItemsResponseItem = zod.object({
+  "id": zod.number(),
+  "workspaceId": zod.number(),
+  "brainId": zod.number().nullish(),
+  "type": zod.enum(['text', 'url', 'faq']),
+  "title": zod.string(),
+  "content": zod.string(),
+  "sourceUrl": zod.string().nullish(),
+  "createdAt": zod.coerce.date()
+})
+export const ListKnowledgeItemsResponse = zod.array(ListKnowledgeItemsResponseItem)
+
+
+/**
+ * @summary Add a knowledge item to a brain
+ */
+export const CreateKnowledgeItemParams = zod.object({
+  "brainId": zod.coerce.number()
+})
+
+
+
+
+
+export const CreateKnowledgeItemBody = zod.object({
+  "type": zod.enum(['text', 'url', 'faq']).optional(),
+  "title": zod.string().min(1),
+  "content": zod.string().min(1),
+  "sourceUrl": zod.string().optional()
+})
+
+export const CreateKnowledgeItemResponse = zod.object({
+  "id": zod.number(),
+  "workspaceId": zod.number(),
+  "brainId": zod.number().nullish(),
+  "type": zod.enum(['text', 'url', 'faq']),
+  "title": zod.string(),
+  "content": zod.string(),
+  "sourceUrl": zod.string().nullish(),
+  "createdAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Delete a knowledge item
+ */
+export const DeleteKnowledgeItemParams = zod.object({
+  "itemId": zod.coerce.number()
+})
+
+export const DeleteKnowledgeItemResponse = zod.void()
+
+
+/**
+ * @summary Send a test message to an agent
+ */
+export const ChatWithAgentParams = zod.object({
+  "agentId": zod.coerce.number()
+})
+
+
+
+
+export const ChatWithAgentBody = zod.object({
+  "message": zod.string().min(1),
+  "conversationHistory": zod.array(zod.object({
+  "role": zod.enum(['user', 'assistant']),
+  "content": zod.string()
+})).optional()
+})
+
+export const ChatWithAgentResponse = zod.object({
+  "reply": zod.string(),
+  "provider": zod.string(),
+  "model": zod.string(),
+  "tokensUsed": zod.number().optional()
+})
+
+
+/**
  * @summary Get dashboard summary stats for a workspace
  */
 export const GetDashboardSummaryParams = zod.object({
@@ -622,7 +884,7 @@ export const GetRecentActivityParams = zod.object({
 
 export const GetRecentActivityResponseItem = zod.object({
   "id": zod.number(),
-  "type": zod.enum(['agent_created', 'agent_updated', 'agent_activated', 'agent_deactivated', 'business_created', 'workspace_created']),
+  "type": zod.enum(['agent_created', 'agent_updated', 'agent_activated', 'agent_deactivated', 'business_created', 'workspace_created', 'brain_created', 'key_added']),
   "title": zod.string(),
   "description": zod.string(),
   "entityId": zod.number().nullish(),

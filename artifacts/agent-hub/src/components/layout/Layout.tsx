@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { useClerk, useUser } from "@clerk/react";
-import { Bot, LayoutDashboard, Building2, Users, Settings, LogOut, Menu, X, PlusCircle } from "lucide-react";
+import { Bot, LayoutDashboard, Building2, Brain, Settings, LogOut, Menu, X, PlusCircle, Key } from "lucide-react";
 import { useListWorkspaces } from "@workspace/api-client-react";
 import { useWorkspace } from "@/context/WorkspaceContext";
 import { Button } from "@/components/ui/button";
@@ -24,7 +24,9 @@ export default function Layout({ children }: LayoutProps) {
     { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
     { name: "Businesses", href: "/businesses", icon: Building2 },
     { name: "Agents", href: "/agents", icon: Bot },
+    { name: "AI Brains", href: "/brains", icon: Brain },
     { name: "Workspaces", href: "/workspaces", icon: Settings },
+    { name: "Settings", href: "/settings", icon: Key },
   ];
 
   return (

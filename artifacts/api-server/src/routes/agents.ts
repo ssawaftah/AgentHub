@@ -1,7 +1,7 @@
 import { Router, type IRouter } from "express";
 import { eq } from "drizzle-orm";
 import { getAuth } from "@clerk/express";
-import { db, agentsTable, activityTable } from "@workspace/db";
+import { db, agentsTable, activityTable, apiKeysTable, aiBrainsTable, knowledgeItemsTable } from "@workspace/db";
 import {
   CreateAgentBody,
   CreateAgentParams,
@@ -10,7 +10,10 @@ import {
   UpdateAgentBody,
   DeleteAgentParams,
   ToggleAgentStatusParams,
+  ChatWithAgentParams,
+  ChatWithAgentBody,
 } from "@workspace/api-zod";
+import { getProvider } from "../lib/providers";
 
 const router: IRouter = Router();
 
@@ -150,6 +153,74 @@ router.patch("/agents/:agentId/toggle-status", requireAuth, async (req: any, res
   }).catch(() => {});
 
   res.json(agent);
+});
+
+// Chat with agent (test endpoint)
+router.post("/agents/:agentId/chat", requireAuth, async (req: any, res): Promise<void> => {
+  const params = ChatWithAgentParams.safeParse(req.params);
+  if (!params.success) { res.status(400).json({ error: params.error.message }); return; }
+
+  const body = ChatWithAgentBody.safeParse(req.body);
+  if (!body.success) { res.status(400).json({ error: body.error.message }); return; }
+
+  const [agent] = await db.select().from(agentsTable).where(eq(agentsTable.id, params.data.agentId));
+  if (!agent) { res.status(404).json({ error: "Agent not found" }); return; }
+
+  // Find API key for this agent's provider in the workspace
+  const [keyRow] = await db
+    .select()
+    .from(apiKeysTable)
+    .where(eq(apiKeysTable.workspaceId, agent.workspaceId))
+    .limit(1);
+
+  if (!keyRow) {
+    res.status(400).json({ error: `No API key found for workspace. Please add a ${agent.provider} key in Settings.` });
+    return;
+  }
+
+  // Build system prompt from agent + brain (if linked)
+  let systemPrompt = agent.instructions ?? "";
+  if (agent.goal) systemPrompt = `Goal: ${agent.goal}\n\n${systemPrompt}`;
+
+  // Optionally inject knowledge from linked brain
+  const brain = await db
+    .select()
+    .from(aiBrainsTable)
+    .where(eq(aiBrainsTable.agentId, agent.id))
+    .limit(1)
+    .then((r) => r[0] ?? null);
+
+  if (brain) {
+    if (brain.systemPrompt) systemPrompt = `${brain.systemPrompt}\n\n${systemPrompt}`;
+
+    const items = await db
+      .select()
+      .from(knowledgeItemsTable)
+      .where(eq(knowledgeItemsTable.brainId, brain.id))
+      .limit(10);
+
+    if (items.length > 0) {
+      const knowledge = items.map((i) => `## ${i.title}\n${i.content}`).join("\n\n");
+      systemPrompt = `${systemPrompt}\n\n--- Knowledge Base ---\n${knowledge}`;
+    }
+  }
+
+  const provider = getProvider(keyRow.provider, keyRow.encryptedKey);
+  const messages = body.data.conversationHistory ?? [];
+  messages.push({ role: "user", content: body.data.message });
+
+  try {
+    const result = await provider.chat(messages, {
+      model: agent.model,
+      temperature: agent.temperature,
+      maxTokens: agent.maxTokens,
+      systemPrompt: systemPrompt || undefined,
+    });
+
+    res.json({ reply: result.reply, provider: keyRow.provider, model: agent.model, tokensUsed: result.tokensUsed });
+  } catch (err: any) {
+    res.status(502).json({ error: `Provider error: ${err.message}` });
+  }
 });
 
 export default router;

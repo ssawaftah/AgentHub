@@ -45,11 +45,32 @@ export class OpenAIProvider implements IProvider {
 
   async testKey(): Promise<{ ok: boolean; message: string }> {
     try {
-      const res = await fetch(`${this.baseUrl}/models`, {
-        headers: { Authorization: `Bearer ${this.apiKey}` },
+      // Use a minimal chat completion — this verifies both auth AND billing quota
+      const res = await fetch(`${this.baseUrl}/chat/completions`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${this.apiKey}`,
+        },
+        body: JSON.stringify({
+          model: "gpt-4o-mini",
+          messages: [{ role: "user", content: "hi" }],
+          max_tokens: 1,
+        }),
       });
-      if (res.ok) return { ok: true, message: "OpenAI key is valid" };
-      return { ok: false, message: `OpenAI returned ${res.status}` };
+
+      if (res.ok) return { ok: true, message: "OpenAI key is valid and has active quota" };
+
+      const body = await res.json().catch(() => ({})) as any;
+      const errMsg = body?.error?.message ?? `HTTP ${res.status}`;
+
+      if (res.status === 429) {
+        return { ok: false, message: `Quota exceeded — please add billing at platform.openai.com/account/billing` };
+      }
+      if (res.status === 401) {
+        return { ok: false, message: "Invalid API key" };
+      }
+      return { ok: false, message: errMsg };
     } catch (e) {
       return { ok: false, message: String(e) };
     }

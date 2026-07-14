@@ -1,3 +1,4 @@
 - [AgentHub AI Architecture](agenthub-arch.md) — Express+PG backend, React+Vite frontend, Clerk auth, Drizzle ORM, Orval codegen
+- [AgentHub Phase Status](agenthub-phase-status.md) — Phase 1+2 done, Phase 3 (Instagram) is next; read before any AgentHub session
 - [Clerk Wiring Rules](clerk-wiring.md) — cookie-based auth on web, proxy middleware before body parsers, no getToken() in browser
 - [Express 5 Patterns](express5-patterns.md) — wildcard routes use /{*splat}, async handlers return Promise<void>, early returns need res.json();return

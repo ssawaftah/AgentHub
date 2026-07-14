@@ -5,6 +5,7 @@ import businessesRouter from "./businesses";
 import agentsRouter from "./agents";
 import apiKeysRouter from "./api_keys";
 import brainsRouter from "./brains";
+import instagramRouter from "./instagram";
 
 const router: IRouter = Router();
 
@@ -14,5 +15,6 @@ router.use(businessesRouter);
 router.use(agentsRouter);
 router.use(apiKeysRouter);
 router.use(brainsRouter);
+router.use(instagramRouter);
 
 export default router;

@@ -853,6 +853,114 @@ export const ChatWithAgentResponse = zod.object({
 
 
 /**
+ * @summary Get connected Instagram account for a workspace
+ */
+export const GetInstagramAccountParams = zod.object({
+  "workspaceId": zod.coerce.number()
+})
+
+export const GetInstagramAccountResponse = zod.object({
+  "id": zod.number(),
+  "workspaceId": zod.number(),
+  "agentId": zod.number().nullish(),
+  "igUserId": zod.string(),
+  "igUsername": zod.string(),
+  "igProfilePicUrl": zod.string().nullish(),
+  "webhookVerifyToken": zod.string(),
+  "status": zod.enum(['active', 'disconnected', 'error']),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Connect an Instagram Business account
+ */
+export const ConnectInstagramParams = zod.object({
+  "workspaceId": zod.coerce.number()
+})
+
+
+
+
+export const connectInstagramBodyWebhookVerifyTokenMin = 8;
+
+
+
+export const ConnectInstagramBody = zod.object({
+  "igUserId": zod.string().min(1),
+  "igUsername": zod.string().min(1),
+  "igProfilePicUrl": zod.string().optional(),
+  "accessToken": zod.string().min(1),
+  "webhookVerifyToken": zod.string().min(connectInstagramBodyWebhookVerifyTokenMin)
+})
+
+export const ConnectInstagramResponse = zod.object({
+  "id": zod.number(),
+  "workspaceId": zod.number(),
+  "agentId": zod.number().nullish(),
+  "igUserId": zod.string(),
+  "igUsername": zod.string(),
+  "igProfilePicUrl": zod.string().nullish(),
+  "webhookVerifyToken": zod.string(),
+  "status": zod.enum(['active', 'disconnected', 'error']),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Assign an AI agent to handle DMs
+ */
+export const AssignInstagramAgentParams = zod.object({
+  "workspaceId": zod.coerce.number()
+})
+
+export const AssignInstagramAgentBody = zod.object({
+  "agentId": zod.number().nullable()
+})
+
+export const AssignInstagramAgentResponse = zod.object({
+  "id": zod.number(),
+  "workspaceId": zod.number(),
+  "agentId": zod.number().nullish(),
+  "igUserId": zod.string(),
+  "igUsername": zod.string(),
+  "igProfilePicUrl": zod.string().nullish(),
+  "webhookVerifyToken": zod.string(),
+  "status": zod.enum(['active', 'disconnected', 'error']),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Disconnect the Instagram account
+ */
+export const DisconnectInstagramParams = zod.object({
+  "workspaceId": zod.coerce.number()
+})
+
+export const DisconnectInstagramResponse = zod.void()
+
+
+/**
+ * @summary List agents available to handle DMs in this workspace
+ */
+export const ListInstagramAgentsParams = zod.object({
+  "workspaceId": zod.coerce.number()
+})
+
+export const ListInstagramAgentsResponseItem = zod.object({
+  "id": zod.number(),
+  "name": zod.string(),
+  "role": zod.string(),
+  "status": zod.string()
+})
+export const ListInstagramAgentsResponse = zod.array(ListInstagramAgentsResponseItem)
+
+
+/**
  * @summary Get dashboard summary stats for a workspace
  */
 export const GetDashboardSummaryParams = zod.object({

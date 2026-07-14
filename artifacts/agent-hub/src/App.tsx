@@ -19,6 +19,7 @@ import AgentDetailPage from "@/pages/AgentDetailPage";
 import SettingsPage from "@/pages/SettingsPage";
 import BrainsPage from "@/pages/BrainsPage";
 import BrainDetailPage from "@/pages/BrainDetailPage";
+import InstagramPage from "@/pages/InstagramPage";
 
 const queryClient = new QueryClient();
 
@@ -211,6 +212,9 @@ function ClerkProviderWithRoutes() {
               </Route>
               <Route path="/brains/:id">
                 <ProtectedRoute component={BrainDetailPage} />
+              </Route>
+              <Route path="/instagram">
+                <ProtectedRoute component={InstagramPage} />
               </Route>
               <Route path="/settings">
                 <ProtectedRoute component={SettingsPage} />

@@ -22,6 +22,8 @@ tags:
     description: API Key management
   - name: brains
     description: AI Brain and Knowledge Base management
+  - name: instagram
+    description: Instagram Business Account integration
 
 paths:
   /healthz:
@@ -628,6 +630,122 @@ paths:
               schema:
                 $ref: "#/components/schemas/ChatReply"
 
+  # ─── Instagram ────────────────────────────────────────────────────────────
+  /workspaces/{workspaceId}/instagram:
+    get:
+      operationId: getInstagramAccount
+      tags: [instagram]
+      summary: Get connected Instagram account for a workspace
+      parameters:
+        - name: workspaceId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Instagram account
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InstagramAccount"
+        "404":
+          description: No account connected
+
+  /workspaces/{workspaceId}/instagram/connect:
+    post:
+      operationId: connectInstagram
+      tags: [instagram]
+      summary: Connect an Instagram Business account
+      parameters:
+        - name: workspaceId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InstagramConnectInput"
+      responses:
+        "201":
+          description: Connected
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InstagramAccount"
+        "200":
+          description: Updated existing connection
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InstagramAccount"
+
+  /workspaces/{workspaceId}/instagram/agent:
+    patch:
+      operationId: assignInstagramAgent
+      tags: [instagram]
+      summary: Assign an AI agent to handle DMs
+      parameters:
+        - name: workspaceId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InstagramAgentAssign"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InstagramAccount"
+        "404":
+          description: No account connected
+
+  /workspaces/{workspaceId}/instagram/disconnect:
+    delete:
+      operationId: disconnectInstagram
+      tags: [instagram]
+      summary: Disconnect the Instagram account
+      parameters:
+        - name: workspaceId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Disconnected
+
+  /workspaces/{workspaceId}/instagram/agents:
+    get:
+      operationId: listInstagramAgents
+      tags: [instagram]
+      summary: List agents available to handle DMs in this workspace
+      parameters:
+        - name: workspaceId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of agents
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/InstagramAgentSummary"
+
   # ─── Dashboard ────────────────────────────────────────────────────────────
   /workspaces/{workspaceId}/dashboard:
     get:
@@ -1214,3 +1332,71 @@ components:
           type: string
         tokensUsed:
           type: integer
+
+    # ─── Instagram ────────────────────────────────────────────────────────────
+    InstagramAccount:
+      type: object
+      required: [id, workspaceId, igUserId, igUsername, webhookVerifyToken, status, createdAt, updatedAt]
+      properties:
+        id:
+          type: integer
+        workspaceId:
+          type: integer
+        agentId:
+          type: ["integer", "null"]
+        igUserId:
+          type: string
+        igUsername:
+          type: string
+        igProfilePicUrl:
+          type: ["string", "null"]
+        webhookVerifyToken:
+          type: string
+        status:
+          type: string
+          enum: [active, disconnected, error]
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    InstagramConnectInput:
+      type: object
+      required: [igUserId, igUsername, accessToken, webhookVerifyToken]
+      properties:
+        igUserId:
+          type: string
+          minLength: 1
+        igUsername:
+          type: string
+          minLength: 1
+        igProfilePicUrl:
+          type: string
+        accessToken:
+          type: string
+          minLength: 1
+        webhookVerifyToken:
+          type: string
+          minLength: 8
+
+    InstagramAgentAssign:
+      type: object
+      required: [agentId]
+      properties:
+        agentId:
+          type: ["integer", "null"]
+
+    InstagramAgentSummary:
+      type: object
+      required: [id, name, role, status]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        role:
+          type: string
+        status:
+          type: string

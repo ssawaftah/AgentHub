@@ -491,3 +491,51 @@ export interface ChatReply {
   tokensUsed?: number;
 }
 
+export type InstagramAccountStatus = typeof InstagramAccountStatus[keyof typeof InstagramAccountStatus];
+
+
+export const InstagramAccountStatus = {
+  active: 'active',
+  disconnected: 'disconnected',
+  error: 'error',
+} as const;
+
+export interface InstagramAccount {
+  id: number;
+  workspaceId: number;
+  /** @nullable */
+  agentId?: number | null;
+  igUserId: string;
+  igUsername: string;
+  /** @nullable */
+  igProfilePicUrl?: string | null;
+  webhookVerifyToken: string;
+  status: InstagramAccountStatus;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface InstagramConnectInput {
+  /** @minLength 1 */
+  igUserId: string;
+  /** @minLength 1 */
+  igUsername: string;
+  igProfilePicUrl?: string;
+  /** @minLength 1 */
+  accessToken: string;
+  /** @minLength 8 */
+  webhookVerifyToken: string;
+}
+
+export interface InstagramAgentAssign {
+  /** @nullable */
+  agentId: number | null;
+}
+
+export interface InstagramAgentSummary {
+  id: number;
+  name: string;
+  role: string;
+  status: string;
+}
+

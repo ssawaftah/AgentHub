@@ -5,3 +5,5 @@ export * from "./activity";
 export * from "./api_keys";
 export * from "./ai_brains";
 export * from "./knowledge_items";
+export * from "./instagram_accounts";
+export * from "./instagram_messages";

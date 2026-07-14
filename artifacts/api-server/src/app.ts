@@ -9,7 +9,9 @@ import {
   getClerkProxyHost,
 } from "./middlewares/clerkProxyMiddleware";
 import router from "./routes";
+import { webhookRouter } from "./routes/instagram";
 import { logger } from "./lib/logger";
+import { startInstagramWorker } from "./lib/instagram-worker";
 
 const app: Express = express();
 
@@ -49,6 +51,12 @@ app.use(
   })),
 );
 
+// Webhook routes — mounted at root (no /api prefix) as required by Meta
+app.use(webhookRouter);
+
 app.use("/api", router);
+
+// Start Instagram background worker
+startInstagramWorker();
 
 export default app;

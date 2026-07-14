@@ -1,30 +1,43 @@
 ---
 name: AgentHub Phase Status
-description: Current build phase and what was completed — read this before any AgentHub session
+description: Which phases are done and what's next for the AgentHub AI project
 ---
 
-## الحالة الحالية (2026-07-14)
+## Phase 1 — Foundation ✅ Complete
+Full monorepo, Clerk auth, PostgreSQL/Drizzle, Express 5 API, React/Vite frontend.
+Workspaces, businesses, agents, activity logging all working.
 
-**Phase 1 ✅ مكتمل** — Foundation: Monorepo + Clerk Auth + PostgreSQL + Express + React/Vite + Full CRUD API + Frontend pages (Landing, Dashboard, Businesses, Agents, Workspaces)
+## Phase 2 — AI Engine ✅ Complete
+- api_keys, ai_brains, knowledge_items DB tables
+- Provider abstraction layer: Gemini, DeepSeek, OpenAI, Claude
+- API routes: api-keys CRUD+test, brains CRUD, knowledge CRUD, agent chat
+- Frontend: Settings (API keys), AI Brains, Brain Detail, Agent Chat Tester tab
 
-**Phase 2 ✅ مكتمل** — AI Engine:
-- DB: api_keys, ai_brains, knowledge_items tables
-- Provider abstraction: Gemini, DeepSeek, OpenAI, Claude (fetch-based, no SDKs)
-- API Routes: api_keys CRUD+test, brains CRUD, knowledge CRUD, /agents/:id/chat
-- Frontend: /settings (API Keys), /brains (list), /brains/:id (detail + knowledge base), Chat Tester tab in Agent Detail
+## Phase 3 — Instagram Integration ✅ Built (2026-07-14)
 
-**Phase 3 ⬜ لم يبدأ** — Instagram Integration:
-- Instagram Webhook (verify + receive DMs)
-- Message Queue + Dedup
-- Auto-Reply Engine via Instagram Graph API
-- Customer Memory (profiles + conversation summaries)
-- Frontend: Instagram account connect/status
+**What was built:**
+- DB tables: `instagram_accounts`, `instagram_messages` (pushed to DB)
+- Backend routes (`artifacts/api-server/src/routes/instagram.ts`):
+  - `GET /api/workspaces/:workspaceId/instagram` — get connected account
+  - `POST /api/workspaces/:workspaceId/instagram/connect` — save/upsert account
+  - `PATCH /api/workspaces/:workspaceId/instagram/agent` — assign DM agent
+  - `DELETE /api/workspaces/:workspaceId/instagram/disconnect` — disconnect
+  - `GET /api/workspaces/:workspaceId/instagram/agents` — list assignable agents
+- Webhook routes (`webhookRouter`, mounted at app root NOT /api):
+  - `GET /webhook/instagram` — Meta verify_token challenge (matches per-account token from DB)
+  - `POST /webhook/instagram` — receives DM events, deduplicates via igMessageId UNIQUE, inserts into queue
+- Background worker (`artifacts/api-server/src/lib/instagram-worker.ts`):
+  - Polls every 5s using `SELECT ... FOR UPDATE SKIP LOCKED`
+  - Builds AI context (agent + brain + knowledge), calls provider, sends reply via Graph API
+  - No Cloudflare — pure PostgreSQL-backed queue
+- OpenAPI spec updated, codegen re-run
+- Frontend: `InstagramPage.tsx` at `/instagram`, added to sidebar + App.tsx routes
 
-**Phase 4 ⬜ لم يبدأ** — Analytics & Polish
+**Key constraint:** User said NO Cloudflare services. Queue is DB-backed.
 
-## ملفات المتابعة
-- PROJECT_STATUS.md — نظرة عامة على كل feature
-- PROJECT_TODO.md — مهام مرقّمة TASK-001 → TASK-045
-- DECISIONS.md — 9 قرارات معمارية موثّقة
+**Workflows:**
+- API server: `PORT=8080 pnpm --filter @workspace/api-server run dev`
+- Frontend: `PORT=18509 BASE_PATH=/ pnpm --filter @workspace/agent-hub run dev`
 
-**Why:** يجب قراءة هذا الملف في بداية كل جلسة AgentHub لمعرفة نقطة الاستمرار بدون إعادة استكشاف الكود.
+## Phase 4 — Analytics & Polish (not started)
+Token usage tracking, analytics dashboard, agent skills system, prompt templates.

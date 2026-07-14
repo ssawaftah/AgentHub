@@ -37,6 +37,10 @@ import type {
   ChatReply,
   DashboardSummary,
   HealthStatus,
+  InstagramAccount,
+  InstagramAgentAssign,
+  InstagramAgentSummary,
+  InstagramConnectInput,
   KnowledgeItem,
   KnowledgeItemInput,
   Workspace,
@@ -2277,6 +2281,375 @@ export const useChatWithAgent = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getChatWithAgentMutationOptions(options));
     }
+
+export const getGetInstagramAccountUrl = (workspaceId: number,) => {
+
+
+
+
+  return `/api/workspaces/${workspaceId}/instagram`
+}
+
+/**
+ * @summary Get connected Instagram account for a workspace
+ */
+export const getInstagramAccount = async (workspaceId: number, options?: RequestInit): Promise<InstagramAccount> => {
+
+  return customFetch<InstagramAccount>(getGetInstagramAccountUrl(workspaceId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetInstagramAccountQueryKey = (workspaceId: number,) => {
+    return [
+    `/api/workspaces/${workspaceId}/instagram`
+    ] as const;
+    }
+
+
+export const getGetInstagramAccountQueryOptions = <TData = Awaited<ReturnType<typeof getInstagramAccount>>, TError = ErrorType<void>>(workspaceId: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getInstagramAccount>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetInstagramAccountQueryKey(workspaceId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getInstagramAccount>>> = ({ signal }) => getInstagramAccount(workspaceId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: workspaceId !== null && workspaceId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getInstagramAccount>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetInstagramAccountQueryResult = NonNullable<Awaited<ReturnType<typeof getInstagramAccount>>>
+export type GetInstagramAccountQueryError = ErrorType<void>
+
+
+/**
+ * @summary Get connected Instagram account for a workspace
+ */
+
+export function useGetInstagramAccount<TData = Awaited<ReturnType<typeof getInstagramAccount>>, TError = ErrorType<void>>(
+ workspaceId: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getInstagramAccount>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetInstagramAccountQueryOptions(workspaceId,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getConnectInstagramUrl = (workspaceId: number,) => {
+
+
+
+
+  return `/api/workspaces/${workspaceId}/instagram/connect`
+}
+
+/**
+ * @summary Connect an Instagram Business account
+ */
+export const connectInstagram = async (workspaceId: number,
+    instagramConnectInput: InstagramConnectInput, options?: RequestInit): Promise<InstagramAccount> => {
+
+  return customFetch<InstagramAccount>(getConnectInstagramUrl(workspaceId),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(instagramConnectInput)
+  }
+);}
+
+
+
+
+
+export const getConnectInstagramMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof connectInstagram>>, TError,{workspaceId: number;data: BodyType<InstagramConnectInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof connectInstagram>>, TError,{workspaceId: number;data: BodyType<InstagramConnectInput>}, TContext> => {
+
+const mutationKey = ['connectInstagram'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof connectInstagram>>, {workspaceId: number;data: BodyType<InstagramConnectInput>}> = (props) => {
+          const {workspaceId,data} = props ?? {};
+
+          return  connectInstagram(workspaceId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ConnectInstagramMutationResult = NonNullable<Awaited<ReturnType<typeof connectInstagram>>>
+    export type ConnectInstagramMutationBody = BodyType<InstagramConnectInput>
+    export type ConnectInstagramMutationError = ErrorType<unknown>
+
+    /**
+ * @summary Connect an Instagram Business account
+ */
+export const useConnectInstagram = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof connectInstagram>>, TError,{workspaceId: number;data: BodyType<InstagramConnectInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof connectInstagram>>,
+        TError,
+        {workspaceId: number;data: BodyType<InstagramConnectInput>},
+        TContext
+      > => {
+      return useMutation(getConnectInstagramMutationOptions(options));
+    }
+
+export const getAssignInstagramAgentUrl = (workspaceId: number,) => {
+
+
+
+
+  return `/api/workspaces/${workspaceId}/instagram/agent`
+}
+
+/**
+ * @summary Assign an AI agent to handle DMs
+ */
+export const assignInstagramAgent = async (workspaceId: number,
+    instagramAgentAssign: InstagramAgentAssign, options?: RequestInit): Promise<InstagramAccount> => {
+
+  return customFetch<InstagramAccount>(getAssignInstagramAgentUrl(workspaceId),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(instagramAgentAssign)
+  }
+);}
+
+
+
+
+
+export const getAssignInstagramAgentMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof assignInstagramAgent>>, TError,{workspaceId: number;data: BodyType<InstagramAgentAssign>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof assignInstagramAgent>>, TError,{workspaceId: number;data: BodyType<InstagramAgentAssign>}, TContext> => {
+
+const mutationKey = ['assignInstagramAgent'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof assignInstagramAgent>>, {workspaceId: number;data: BodyType<InstagramAgentAssign>}> = (props) => {
+          const {workspaceId,data} = props ?? {};
+
+          return  assignInstagramAgent(workspaceId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type AssignInstagramAgentMutationResult = NonNullable<Awaited<ReturnType<typeof assignInstagramAgent>>>
+    export type AssignInstagramAgentMutationBody = BodyType<InstagramAgentAssign>
+    export type AssignInstagramAgentMutationError = ErrorType<void>
+
+    /**
+ * @summary Assign an AI agent to handle DMs
+ */
+export const useAssignInstagramAgent = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof assignInstagramAgent>>, TError,{workspaceId: number;data: BodyType<InstagramAgentAssign>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof assignInstagramAgent>>,
+        TError,
+        {workspaceId: number;data: BodyType<InstagramAgentAssign>},
+        TContext
+      > => {
+      return useMutation(getAssignInstagramAgentMutationOptions(options));
+    }
+
+export const getDisconnectInstagramUrl = (workspaceId: number,) => {
+
+
+
+
+  return `/api/workspaces/${workspaceId}/instagram/disconnect`
+}
+
+/**
+ * @summary Disconnect the Instagram account
+ */
+export const disconnectInstagram = async (workspaceId: number, options?: RequestInit): Promise<void> => {
+
+  return customFetch<void>(getDisconnectInstagramUrl(workspaceId),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+
+export const getDisconnectInstagramMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof disconnectInstagram>>, TError,{workspaceId: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof disconnectInstagram>>, TError,{workspaceId: number}, TContext> => {
+
+const mutationKey = ['disconnectInstagram'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof disconnectInstagram>>, {workspaceId: number}> = (props) => {
+          const {workspaceId} = props ?? {};
+
+          return  disconnectInstagram(workspaceId,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DisconnectInstagramMutationResult = NonNullable<Awaited<ReturnType<typeof disconnectInstagram>>>
+
+    export type DisconnectInstagramMutationError = ErrorType<unknown>
+
+    /**
+ * @summary Disconnect the Instagram account
+ */
+export const useDisconnectInstagram = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof disconnectInstagram>>, TError,{workspaceId: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof disconnectInstagram>>,
+        TError,
+        {workspaceId: number},
+        TContext
+      > => {
+      return useMutation(getDisconnectInstagramMutationOptions(options));
+    }
+
+export const getListInstagramAgentsUrl = (workspaceId: number,) => {
+
+
+
+
+  return `/api/workspaces/${workspaceId}/instagram/agents`
+}
+
+/**
+ * @summary List agents available to handle DMs in this workspace
+ */
+export const listInstagramAgents = async (workspaceId: number, options?: RequestInit): Promise<InstagramAgentSummary[]> => {
+
+  return customFetch<InstagramAgentSummary[]>(getListInstagramAgentsUrl(workspaceId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListInstagramAgentsQueryKey = (workspaceId: number,) => {
+    return [
+    `/api/workspaces/${workspaceId}/instagram/agents`
+    ] as const;
+    }
+
+
+export const getListInstagramAgentsQueryOptions = <TData = Awaited<ReturnType<typeof listInstagramAgents>>, TError = ErrorType<unknown>>(workspaceId: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listInstagramAgents>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListInstagramAgentsQueryKey(workspaceId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listInstagramAgents>>> = ({ signal }) => listInstagramAgents(workspaceId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: workspaceId !== null && workspaceId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listInstagramAgents>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListInstagramAgentsQueryResult = NonNullable<Awaited<ReturnType<typeof listInstagramAgents>>>
+export type ListInstagramAgentsQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary List agents available to handle DMs in this workspace
+ */
+
+export function useListInstagramAgents<TData = Awaited<ReturnType<typeof listInstagramAgents>>, TError = ErrorType<unknown>>(
+ workspaceId: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listInstagramAgents>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListInstagramAgentsQueryOptions(workspaceId,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
 
 export const getGetDashboardSummaryUrl = (workspaceId: number,) => {
 

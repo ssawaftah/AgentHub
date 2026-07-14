@@ -1,5 +1,5 @@
 import { Router, type IRouter } from "express";
-import { eq } from "drizzle-orm";
+import { eq, and, desc } from "drizzle-orm";
 import { getAuth } from "@clerk/express";
 import { db, agentsTable, activityTable, apiKeysTable, aiBrainsTable, knowledgeItemsTable } from "@workspace/db";
 import {
@@ -166,11 +166,17 @@ router.post("/agents/:agentId/chat", requireAuth, async (req: any, res): Promise
   const [agent] = await db.select().from(agentsTable).where(eq(agentsTable.id, params.data.agentId));
   if (!agent) { res.status(404).json({ error: "Agent not found" }); return; }
 
-  // Find API key for this agent's provider in the workspace
+  // Find API key for this agent's provider in the workspace (prefer newest)
   const [keyRow] = await db
     .select()
     .from(apiKeysTable)
-    .where(eq(apiKeysTable.workspaceId, agent.workspaceId))
+    .where(
+      and(
+        eq(apiKeysTable.workspaceId, agent.workspaceId),
+        eq(apiKeysTable.provider, agent.provider),
+      ),
+    )
+    .orderBy(desc(apiKeysTable.createdAt))
     .limit(1);
 
   if (!keyRow) {

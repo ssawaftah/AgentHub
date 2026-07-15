@@ -3,6 +3,7 @@ import { GeminiProvider } from "./gemini";
 import { DeepSeekProvider } from "./deepseek";
 import { OpenAIProvider } from "./openai";
 import { ClaudeProvider } from "./claude";
+import { GroqProvider } from "./groq";
 
 export type { IProvider, ChatMessage, ChatOptions, ChatResult } from "./types";
 
@@ -16,6 +17,8 @@ export function getProvider(provider: string, apiKey: string): IProvider {
       return new OpenAIProvider(apiKey);
     case "claude":
       return new ClaudeProvider(apiKey);
+    case "groq":
+      return new GroqProvider(apiKey);
     default:
       throw new Error(`Unknown provider: ${provider}`);
   }

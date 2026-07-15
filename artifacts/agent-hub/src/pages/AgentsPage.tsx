@@ -73,7 +73,7 @@ const step1Schema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   role: z.string().min(2, "Role is required"),
   description: z.string().optional(),
-  provider: z.enum(["deepseek", "gemini", "openai", "claude"]),
+  provider: z.enum(["deepseek", "gemini", "openai", "claude", "groq"]),
   model: z.string().min(1, "Model is required"),
   businessId: z.string().optional(),
 });
@@ -109,6 +109,12 @@ const MODEL_OPTIONS: Record<string, { value: string; label: string }[]> = {
   claude: [
     { value: "claude-3-5-sonnet-20241022", label: "Claude 3.5 Sonnet" },
     { value: "claude-3-haiku-20240307", label: "Claude 3 Haiku" },
+  ],
+  groq: [
+    { value: "llama-3.3-70b-versatile", label: "Llama 3.3 70B (Free)" },
+    { value: "llama-3.1-8b-instant", label: "Llama 3.1 8B Instant (Free)" },
+    { value: "gemma2-9b-it", label: "Gemma 2 9B (Free)" },
+    { value: "mixtral-8x7b-32768", label: "Mixtral 8x7B (Free)" },
   ],
 };
 
@@ -332,6 +338,7 @@ function CreateAgentDialog({
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
+                            <SelectItem value="groq">Groq (Free ✓)</SelectItem>
                             <SelectItem value="gemini">Google Gemini</SelectItem>
                             <SelectItem value="deepseek">DeepSeek</SelectItem>
                             <SelectItem value="openai">OpenAI</SelectItem>

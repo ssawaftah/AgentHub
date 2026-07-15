@@ -60,10 +60,11 @@ const providerColors: Record<string, string> = {
   openai: "bg-green-500/10 text-green-500 border-green-500/20",
   deepseek: "bg-purple-500/10 text-purple-500 border-purple-500/20",
   claude: "bg-orange-500/10 text-orange-500 border-orange-500/20",
+  groq: "bg-red-500/10 text-red-400 border-red-500/20",
 };
 
 const formSchema = z.object({
-  provider: z.enum(["deepseek", "gemini", "openai", "claude"], {
+  provider: z.enum(["deepseek", "gemini", "openai", "claude", "groq"], {
     required_error: "Please select a provider.",
   }),
   label: z.string().min(2, "Label must be at least 2 characters"),
@@ -220,6 +221,7 @@ export default function SettingsPage() {
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
+                              <SelectItem value="groq">Groq (Free ✓)</SelectItem>
                               <SelectItem value="openai">OpenAI</SelectItem>
                               <SelectItem value="claude">Anthropic Claude</SelectItem>
                               <SelectItem value="gemini">Google Gemini</SelectItem>

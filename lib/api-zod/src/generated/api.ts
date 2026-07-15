@@ -307,7 +307,7 @@ export const ListAgentsResponseItem = zod.object({
   "creativity": zod.number().min(listAgentsResponseCreativityMin).max(listAgentsResponseCreativityMax),
   "temperature": zod.number().min(listAgentsResponseTemperatureMin).max(listAgentsResponseTemperatureMax),
   "maxTokens": zod.number(),
-  "provider": zod.enum(['deepseek', 'gemini', 'openai', 'claude']),
+  "provider": zod.enum(['deepseek', 'gemini', 'openai', 'claude', 'groq']),
   "model": zod.string(),
   "status": zod.enum(['active', 'inactive', 'draft']),
   "createdAt": zod.coerce.date(),
@@ -355,7 +355,7 @@ export const CreateAgentBody = zod.object({
   "creativity": zod.number().min(createAgentBodyCreativityMin).max(createAgentBodyCreativityMax).optional(),
   "temperature": zod.number().min(createAgentBodyTemperatureMin).max(createAgentBodyTemperatureMax).optional(),
   "maxTokens": zod.number().optional(),
-  "provider": zod.enum(['deepseek', 'gemini', 'openai', 'claude']),
+  "provider": zod.enum(['deepseek', 'gemini', 'openai', 'claude', 'groq']),
   "model": zod.string()
 })
 
@@ -392,7 +392,7 @@ export const CreateAgentResponse = zod.object({
   "creativity": zod.number().min(createAgentResponseCreativityMin).max(createAgentResponseCreativityMax),
   "temperature": zod.number().min(createAgentResponseTemperatureMin).max(createAgentResponseTemperatureMax),
   "maxTokens": zod.number(),
-  "provider": zod.enum(['deepseek', 'gemini', 'openai', 'claude']),
+  "provider": zod.enum(['deepseek', 'gemini', 'openai', 'claude', 'groq']),
   "model": zod.string(),
   "status": zod.enum(['active', 'inactive', 'draft']),
   "createdAt": zod.coerce.date(),
@@ -440,7 +440,7 @@ export const GetAgentResponse = zod.object({
   "creativity": zod.number().min(getAgentResponseCreativityMin).max(getAgentResponseCreativityMax),
   "temperature": zod.number().min(getAgentResponseTemperatureMin).max(getAgentResponseTemperatureMax),
   "maxTokens": zod.number(),
-  "provider": zod.enum(['deepseek', 'gemini', 'openai', 'claude']),
+  "provider": zod.enum(['deepseek', 'gemini', 'openai', 'claude', 'groq']),
   "model": zod.string(),
   "status": zod.enum(['active', 'inactive', 'draft']),
   "createdAt": zod.coerce.date(),
@@ -486,7 +486,7 @@ export const UpdateAgentBody = zod.object({
   "creativity": zod.number().min(updateAgentBodyCreativityMin).max(updateAgentBodyCreativityMax).optional(),
   "temperature": zod.number().min(updateAgentBodyTemperatureMin).max(updateAgentBodyTemperatureMax).optional(),
   "maxTokens": zod.number().optional(),
-  "provider": zod.enum(['deepseek', 'gemini', 'openai', 'claude']).optional(),
+  "provider": zod.enum(['deepseek', 'gemini', 'openai', 'claude', 'groq']).optional(),
   "model": zod.string().optional(),
   "status": zod.enum(['active', 'inactive', 'draft']).optional()
 })
@@ -524,7 +524,7 @@ export const UpdateAgentResponse = zod.object({
   "creativity": zod.number().min(updateAgentResponseCreativityMin).max(updateAgentResponseCreativityMax),
   "temperature": zod.number().min(updateAgentResponseTemperatureMin).max(updateAgentResponseTemperatureMax),
   "maxTokens": zod.number(),
-  "provider": zod.enum(['deepseek', 'gemini', 'openai', 'claude']),
+  "provider": zod.enum(['deepseek', 'gemini', 'openai', 'claude', 'groq']),
   "model": zod.string(),
   "status": zod.enum(['active', 'inactive', 'draft']),
   "createdAt": zod.coerce.date(),
@@ -582,7 +582,7 @@ export const ToggleAgentStatusResponse = zod.object({
   "creativity": zod.number().min(toggleAgentStatusResponseCreativityMin).max(toggleAgentStatusResponseCreativityMax),
   "temperature": zod.number().min(toggleAgentStatusResponseTemperatureMin).max(toggleAgentStatusResponseTemperatureMax),
   "maxTokens": zod.number(),
-  "provider": zod.enum(['deepseek', 'gemini', 'openai', 'claude']),
+  "provider": zod.enum(['deepseek', 'gemini', 'openai', 'claude', 'groq']),
   "model": zod.string(),
   "status": zod.enum(['active', 'inactive', 'draft']),
   "createdAt": zod.coerce.date(),
@@ -600,7 +600,7 @@ export const ListApiKeysParams = zod.object({
 export const ListApiKeysResponseItem = zod.object({
   "id": zod.number(),
   "workspaceId": zod.number(),
-  "provider": zod.enum(['deepseek', 'gemini', 'openai', 'claude']),
+  "provider": zod.enum(['deepseek', 'gemini', 'openai', 'claude', 'groq']),
   "label": zod.string(),
   "keyPreview": zod.string(),
   "createdAt": zod.coerce.date()
@@ -621,7 +621,7 @@ export const createApiKeyBodyKeyMin = 8;
 
 
 export const CreateApiKeyBody = zod.object({
-  "provider": zod.enum(['deepseek', 'gemini', 'openai', 'claude']),
+  "provider": zod.enum(['deepseek', 'gemini', 'openai', 'claude', 'groq']),
   "label": zod.string().min(1),
   "key": zod.string().min(createApiKeyBodyKeyMin)
 })
@@ -629,7 +629,7 @@ export const CreateApiKeyBody = zod.object({
 export const CreateApiKeyResponse = zod.object({
   "id": zod.number(),
   "workspaceId": zod.number(),
-  "provider": zod.enum(['deepseek', 'gemini', 'openai', 'claude']),
+  "provider": zod.enum(['deepseek', 'gemini', 'openai', 'claude', 'groq']),
   "label": zod.string(),
   "keyPreview": zod.string(),
   "createdAt": zod.coerce.date()

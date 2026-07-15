@@ -40,13 +40,15 @@ AI-powered customer service platform that lets businesses deploy intelligent age
 - All routes go through `/api` except Instagram webhooks which live at `/webhook/instagram` (Meta requires a stable root URL).
 - Instagram message queue is PostgreSQL-backed (`instagram_messages` table with `processedAt` column). Worker uses `FOR UPDATE SKIP LOCKED` for safe concurrent processing. **No Cloudflare services** (user preference).
 - AI provider abstraction in `artifacts/api-server/src/lib/providers/` — add new providers by implementing `IProvider`.
+- The chat route in `agents.ts` picks API keys filtered by `agent.provider` ordered by `createdAt DESC` — newest key for the matching provider wins. Old keys are NOT auto-deleted when a new one is added.
+- `testKey()` on OpenAI and Groq providers uses a real `chat/completions` call (max_tokens:1) so quota issues surface immediately. Gemini and DeepSeek `testKey()` still use the `/models` endpoint (lightweight, does not verify billing).
 - Access tokens stored as-is in dev; encrypt at rest in production.
 
 ## Product
 
 - **Workspaces** — multi-tenant, each user can have multiple workspaces
 - **Businesses** — business profiles with brand voice, policies
-- **Agents** — AI agents with configurable persona, provider (Gemini/OpenAI/Claude/DeepSeek), and model
+- **Agents** — AI agents with configurable persona, provider (Gemini/OpenAI/Claude/DeepSeek/Groq), and model
 - **AI Brains** — system prompts + knowledge base items, linked to agents
 - **Instagram** — connect a Business account, assign an agent to handle DMs, monitor via /instagram page
 - **Settings** — API key management per workspace
@@ -57,6 +59,7 @@ AI-powered customer service platform that lets businesses deploy intelligent age
 - ✅ Phase 1 — Foundation (auth, DB, API, frontend)
 - ✅ Phase 2 — AI Engine (providers, brains, knowledge, agent chat tester)
 - ✅ Phase 3 — Instagram Integration (webhook, auto-reply worker, connect page)
+- ✅ Phase 2.5 — Provider Fixes & Groq (2026-07-15)
 - ⬜ Phase 4 — Analytics & Polish
 
 ## User preferences
@@ -64,6 +67,7 @@ AI-powered customer service platform that lets businesses deploy intelligent age
 - No Cloudflare services — use DB-backed queues instead
 - Express 5 wildcard routes use `/{*splat}` syntax
 - Keep project structure as-is (do not restructure/migrate)
+- Preferred free AI provider: **Groq** (console.groq.com — no credit card, 14,400 req/day, Llama/Mixtral/Gemma models)
 
 ## Gotchas
 
